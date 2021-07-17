@@ -1,7 +1,7 @@
 #define GL_SILENCE_DEPRECATION
 
 #include <iostream>
-#include <glad/glad.h>
+#include "include/glad/glad.h"
 #include "include/GLFW/glfw3.h"
 
 typedef unsigned int uint;
@@ -147,7 +147,9 @@ int main()
         0.5f, 0.5f, 0.0f,   // top right
         0.5f, -0.5f, 0.0f,  // bottom right
         -0.5f, -0.5f, 0.0f, // bottom left
-        -0.5f, 0.5f, 0.0f   // top left
+        -0.6f, 0.5f, 0.0f,  // top l
+        0.4f, 0.5f, 0.0f,   // top r
+        -0.6f, -0.4f, 0.0f,
     };
 
     uint indices[] = {
@@ -182,8 +184,8 @@ int main()
     // tell how to intepret the vertex data (for the vertex shader)
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    // glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    // glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
@@ -213,8 +215,8 @@ int main()
         // activate the program object
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-        //glDrawArrays(GL_TRIANGLES, 0, 3);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+        glDrawArrays(GL_TRIANGLES, 0, 6 );
+        // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
         //glBindVertexArray(0); // no need to unbind it every time
 
         //EVENTS
