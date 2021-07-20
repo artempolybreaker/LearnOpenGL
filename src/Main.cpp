@@ -4,27 +4,9 @@
 #include <math.h>
 #include "include/glad/glad.h"
 #include "include/GLFW/glfw3.h"
+#include "Shader.h"
 
 typedef unsigned int uint;
-
-const char *vertexShaderSource = "#version 330 core\n"
-                                 "layout (location = 0) in vec3 aPos;\n"
-                                 "layout (location = 1) in vec3 aCol;\n"
-                                 "out vec3 color;\n"
-                                 "void main()\n"
-                                 "{\n"
-                                 "   color = vec3(1.0, 1.0, 1.0);\n"
-                                 "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
-                                 "}\0";
-
-const char *fragmentShaderSource = "#version 330 core\n"
-                                   "in vec3 color;\n"
-                                   "out vec4 FragColor;\n"
-                                   "uniform vec4 myColor;\n"
-                                   "void main()\n"
-                                   "{\n"
-                                   "   FragColor = vec4(myColor.xyz, 1.0f);\n"
-                                   "}\0";
 
 //void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
@@ -42,58 +24,6 @@ void processInput(GLFWwindow *window)
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
         glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
-}
-
-uint compileShader(int shaderType, const char *shaderSourceCode)
-{
-    uint shader;
-    shader = glCreateShader(shaderType);
-    glShaderSource(shader, 1, &shaderSourceCode, NULL);
-    glCompileShader(shader);
-
-    // check if successful
-    int success;
-    char infoLog[512];
-    glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-
-    if (!success)
-    {
-        glGetShaderInfoLog(shader, 512, NULL, infoLog);
-        const char *shaderTypeStr;
-        if (shaderType == GL_VERTEX_SHADER)
-        {
-            shaderTypeStr = "VERTEX";
-        }
-        else if (shaderType == GL_FRAGMENT_SHADER)
-        {
-            shaderTypeStr = "FRAGMENT";
-        }
-        else
-        {
-            shaderTypeStr = "UNDEFINED";
-        }
-        std::cout << "ERROR::SHADER::" << shaderTypeStr << "::COMPILATION_FAILED\n"
-                  << infoLog << std::endl;
-    }
-
-    return shader;
-}
-
-void linkProgram(uint shaderProgram)
-{
-    glLinkProgram(shaderProgram);
-
-    // check if successful
-    int success;
-    char infoLog[512];
-    glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-
-    if (!success)
-    {
-        glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-        std::cout << "ERROR::SHADER::LINKING_FAILED\n"
-                  << infoLog << std::endl;
-    }
 }
 
 int main()
@@ -130,21 +60,6 @@ int main()
     glViewport(0, 0, width, height);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-    // compiling shaders
-    uint vertexShader = compileShader(GL_VERTEX_SHADER, vertexShaderSource);
-    uint fragmentShader = compileShader(GL_FRAGMENT_SHADER, fragmentShaderSource);
-
-    // linking shaders
-    uint shaderProgram;
-    shaderProgram = glCreateProgram();
-    glAttachShader(shaderProgram, vertexShader);
-    glAttachShader(shaderProgram, fragmentShader);
-    linkProgram(shaderProgram);
-
-    // once linked - we don't need shader objects anymore
-    glDeleteShader(vertexShader);
-    glDeleteShader(fragmentShader);
-
     float vertices[] = {
         0.5f, 0.5f, 0.0f,   // top right
         0.5f, -0.5f, 0.0f,  // bottom right
@@ -154,15 +69,18 @@ int main()
         -0.6f, -0.4f, 0.0f,
     };
 
-    float triangles[2][9] = {
-        {0.5f, 0.5f, 0.0f,   // top right
-        0.5f, -0.5f, 0.0f,  // bottom right
-        -0.5f, -0.5f, 0.0f},
+    float triangles[2][18] = {
+        // positions            //colors
         {
-        -0.6f, 0.5f, 0.0f,  // top l
-        0.4f, 0.5f, 0.0f,   // top r
-        -0.6f, -0.4f, 0.0f,
-        } // bottom left
+        0.5f, 0.5f, 0.0f,       0.5f, 0.5f, 0.3f,
+        0.5f, -0.5f, 0.0f,      1.0f, 0.5f, 0.1f,
+        -0.5f, -0.5f, 0.0f,     0.5f, 0.5f, 1.0f,
+        },
+        {
+        -0.6f, 0.5f, 0.0f,      0.2f, 0.4f, 0.2f,
+        0.4f, 0.5f, 0.0f,       0.6f, 0.1f, 0.7f,
+        -0.6f, -0.4f, 0.0f,     0.5f, 0.8f, 1.0f,
+        }
     };
 
     uint indices[] = {
@@ -196,9 +114,11 @@ int main()
         glBindVertexArray(vao);
 
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 9, meshVertices, GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 18, meshVertices, GL_STATIC_DRAW);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
         glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1 );
         //glBindBuffer(GL_ARRAY_BUFFER, 0);
         //glBindVertexArray(0);
     }
@@ -236,6 +156,7 @@ int main()
     // uncomment this call to draw in wireframe polygons.
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+    Shader myShader("shaders/shader.vs", "shaders/shader.fs");
     while (!glfwWindowShouldClose(window))
     {
         //INPUT
@@ -245,11 +166,10 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        int vertexColorLocation = glGetUniformLocation(shaderProgram, "myColor");
-        glUseProgram(shaderProgram);
+        myShader.use();
         float time = glfwGetTime();
         float sinValue = sin(time) / 2 + 0.5f;
-        glUniform4f(vertexColorLocation, sinValue, sinValue, 0.4f, 0.2f);
+        myShader.setVec4f("myColor", sinValue, sinValue, 0.4f, 0.2f);
         for (int i = 0; i < 2; i++)
         {
             glBindVertexArray(vaos[i]); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
