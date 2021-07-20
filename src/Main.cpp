@@ -1,6 +1,7 @@
 #define GL_SILENCE_DEPRECATION
 
 #include <iostream>
+#include <math.h>
 #include "include/glad/glad.h"
 #include "include/GLFW/glfw3.h"
 
@@ -19,9 +20,10 @@ const char *vertexShaderSource = "#version 330 core\n"
 const char *fragmentShaderSource = "#version 330 core\n"
                                    "in vec3 color;\n"
                                    "out vec4 FragColor;\n"
+                                   "uniform vec4 myColor;\n"
                                    "void main()\n"
                                    "{\n"
-                                   "   FragColor = vec4(color, 1.0f);\n"
+                                   "   FragColor = vec4(myColor.xyz, 1.0f);\n"
                                    "}\0";
 
 //void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -197,8 +199,8 @@ int main()
         glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 9, meshVertices, GL_STATIC_DRAW);
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(0);
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        // glBindVertexArray(0);
+        //glBindBuffer(GL_ARRAY_BUFFER, 0);
+        //glBindVertexArray(0);
     }
 
     // // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
@@ -243,7 +245,11 @@ int main()
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
+        int vertexColorLocation = glGetUniformLocation(shaderProgram, "myColor");
         glUseProgram(shaderProgram);
+        float time = glfwGetTime();
+        float sinValue = sin(time) / 2 + 0.5f;
+        glUniform4f(vertexColorLocation, sinValue, sinValue, 0.4f, 0.2f);
         for (int i = 0; i < 2; i++)
         {
             glBindVertexArray(vaos[i]); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
