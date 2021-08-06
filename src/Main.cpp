@@ -156,7 +156,9 @@ int main()
     // uncomment this call to draw in wireframe polygons.
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    Shader myShader("shaders/shader.vs", "shaders/shader.fs");
+
+    std::cout << "before constructor..." << std::endl;
+    Shader myShader("./src/shaders/shaderVert.vs", "./src/shaders/shaderFrag.fs");
     while (!glfwWindowShouldClose(window))
     {
         //INPUT

@@ -23,11 +23,11 @@ public:
         fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
         try {
             // open files
+            std::cout << "openning " << vertexPath << std::endl;
             vShaderFile.open(vertexPath);
-            std::cout << "opened vertexPath" << std::endl;
+            std::cout << "openning " << fragmentPath << std::endl;
+            fShaderFile.open(fragmentPath);
 
-            vShaderFile.open(fragmentPath);
-            std::cout << "opened fragmentPath" << std::endl;
             std::stringstream vShaderStream, fShaderStream;
             // read file's buffer contents into streams
             vShaderStream << vShaderFile.rdbuf();
@@ -37,8 +37,9 @@ public:
             fShaderFile.close();
             // convert stream into string
             vertexCode = vShaderStream.str();
-            fragmentCode = vShaderStream.str();
+            fragmentCode = fShaderStream.str();
         } catch(std::ifstream::failure e) {
+            std::cout << e.what() << std::endl;
             std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
         }
         
