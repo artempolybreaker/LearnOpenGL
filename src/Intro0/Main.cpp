@@ -2,9 +2,9 @@
 
 #include <iostream>
 #include <math.h>
-#include "include/glad/glad.h"
-#include "include/GLFW/glfw3.h"
-#include "Shader.h"
+#include "../include/glad/glad.h"
+#include "../include/GLFW/glfw3.h"
+#include "../Shader.h"
 
 typedef unsigned int uint;
 
@@ -157,7 +157,7 @@ int main()
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 
-    std::cout << "before constructor..." << std::endl;
+    //std::cout << "before constructor..." << std::endl;
     Shader myShader("./src/shaders/shaderVert.vs", "./src/shaders/shaderFrag.fs");
     while (!glfwWindowShouldClose(window))
     {
