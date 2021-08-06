@@ -61,27 +61,11 @@ int main()
     glViewport(0, 0, width, height);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-    float vertices[] = {
-        0.5f, 0.5f, 0.0f,   // top right
-        0.5f, -0.5f, 0.0f,  // bottom right
-        -0.5f, -0.5f, 0.0f, // bottom left
-        -0.6f, 0.5f, 0.0f,  // top l
-        0.4f, 0.5f, 0.0f,   // top r
-        -0.6f, -0.4f, 0.0f,
-    };
-
-    float triangles[2][18] = {
-        // positions            //colors
-        {
-        0.5f, 0.5f, 0.0f,       0.5f, 0.5f, 0.3f,
-        0.5f, -0.5f, 0.0f,      1.0f, 0.5f, 0.1f,
-        -0.5f, -0.5f, 0.0f,     0.5f, 0.5f, 1.0f,
-        },
-        {
-        -0.6f, 0.5f, 0.0f,      0.2f, 0.4f, 0.2f,
-        0.4f, 0.5f, 0.0f,       0.6f, 0.1f, 0.7f,
-        -0.6f, -0.4f, 0.0f,     0.5f, 0.8f, 1.0f,
-        }
+    float triangles[9] = {
+        // positions  
+        0.0f, 0.5f, 0.0f,
+        0.5f, -0.5f, 0.0f,
+        -0.5f, -0.5f, 0.0f,
     };
 
     uint indices[] = {
@@ -96,33 +80,20 @@ int main()
     };
 
     // creating vertex buffer object and vertex arrays object
-    uint VBO1, VBO2, VAO1, VAO2, EBO, COLORS_VBO;
+    uint VBO, VAO;
 
-    GLuint vaos[2];
-    glGenVertexArrays(2, vaos);
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
 
-    GLuint vbos[2];
-    glGenBuffers(2, vbos);
-
-    glGenBuffers(1, &EBO);
-    glGenBuffers(1, &COLORS_VBO);
-
-    for(int i = 0, n = sizeof(vaos)/sizeof(*vaos); i < n; i++) {
-        GLuint vao = vaos[i];
-        GLuint vbo = vbos[i];
-        float* meshVertices = triangles[i];
-
-        glBindVertexArray(vao);
-
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 18, meshVertices, GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
-        glEnableVertexAttribArray(0);
-        glEnableVertexAttribArray(1 );
-        //glBindBuffer(GL_ARRAY_BUFFER, 0);
-        //glBindVertexArray(0);
-    }
+    float* meshVertices = triangles;
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 9, meshVertices, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+    //glBindBuffer(GL_ARRAY_BUFFER, 0);
+    //glBindVertexArray(0);
+    
 
     // // bind the Vertex Array Object first, then bind and set vertex buffer(s), and then configure vertex attributes(s).
     // glBindVertexArray(VAO);
@@ -173,12 +144,9 @@ int main()
         float time = glfwGetTime();
         float sinValue = sin(time) * 0.5f + 0.5f;
         myShader.setVec4f("myColor", sinValue, sinValue, 0.4f, 0.2f);
-        myShader.setVec2f("offset", sin(time) * 0.5f, cos(time) * 0.5f);
-        for (int i = 0; i < 2; i++)
-        {
-            glBindVertexArray(vaos[i]); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-            glDrawArrays(GL_TRIANGLES, 0, 3);
-        }
+        // myShader.setVec2f("offset", sin(time) * 0.5f, cos(time) * 0.5f);
+        glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
+        glDrawArrays(GL_TRIANGLES, 0, 3);
         
         // activate the program object
         // glUseProgram(shaderProgram);
