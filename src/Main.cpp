@@ -170,8 +170,9 @@ int main()
 
         myShader.use();
         float time = glfwGetTime();
-        float sinValue = sin(time) / 2 + 0.5f;
+        float sinValue = sin(time) * 0.5f + 0.5f;
         myShader.setVec4f("myColor", sinValue, sinValue, 0.4f, 0.2f);
+        myShader.setVec2f("offset", sin(time) * 0.5f, cos(time) * 0.5f);
         for (int i = 0; i < 2; i++)
         {
             glBindVertexArray(vaos[i]); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized

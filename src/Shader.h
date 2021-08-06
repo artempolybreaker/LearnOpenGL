@@ -105,6 +105,10 @@ public:
     void setVec4f(const std::string &name, float value0, float value1, float value2, float value3) const {
         glUniform4f(glGetUniformLocation(ID, name.c_str()), value0, value1, value2, value3); 
     }
+    
+    void setVec2f(const std::string &name, float value0, float value1) const {
+        glUniform2f(glGetUniformLocation(ID, name.c_str()), value0, value1); 
+    }
 };
 
 #endif
