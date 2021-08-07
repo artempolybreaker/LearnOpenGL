@@ -6,6 +6,7 @@
 #include "../include/glad/glad.h"
 #include "../include/GLFW/glfw3.h"
 #include "../Shader.h"
+#include "../include/stb/stb_image.h"
 
 typedef unsigned int uint;
 
