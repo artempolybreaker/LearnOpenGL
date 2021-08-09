@@ -155,7 +155,7 @@ int main()
 
 
     //std::cout << "before constructor..." << std::endl;
-    Shader myShader("./src/shaders/shaderVert.vs", "./src/shaders/shaderFrag.fs");
+    Shader myShader("./src/shaders/intro0/shaderVert.vs", "./src/shaders/intr0/shaderFrag.fs");
     while (!glfwWindowShouldClose(window))
     {
         //INPUT

@@ -12,5 +12,5 @@ void main()
 {
    color = aCol;
    uv = aUV;
-   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0) + vec4(offset, 0, 0);
+   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);// + vec4(offset, 0, 0);
 }
