@@ -5,5 +5,5 @@ Execution of tutorials from https://learnopengl.com/ on MacOS Big Sur (on M1 chi
 ### Intro - Textures:
 ![Textured Quad](./docs/resources/floating_quad.gif)
 
-### Intro - Transformations!
+### Intro - Transformations:
 ![Transformating Quad](./docs/resources/drunk_quad.gif)
