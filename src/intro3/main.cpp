@@ -13,6 +13,8 @@
 
 typedef unsigned int uint;
 
+float cam_dir_z;
+
 //void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
@@ -21,6 +23,7 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 }
 void processInput(GLFWwindow *window)
 {
+    cam_dir_z= 0;
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
     if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
@@ -29,6 +32,10 @@ void processInput(GLFWwindow *window)
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
         glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+        cam_dir_z = 0.1f;
+    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+        cam_dir_z = -0.1f;
 }
 
 int main()
@@ -155,11 +162,12 @@ int main()
     // uncomment this call to draw in wireframe polygons.
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    Shader myShader("./src/shaders/intro2/textured.vs", "./src/shaders/intro2/textured.fs");
+    Shader myShader("./src/shaders/intro3/textured.vs", "./src/shaders/intro3/textured.fs");
     myShader.use();
     myShader.setInt("texture1", 0);
     myShader.setInt("texture2", 1);
 
+    float camPosZ = -3.0f;
     while (!glfwWindowShouldClose(window))
     {
         //INPUT
@@ -168,19 +176,23 @@ int main()
         //MATH
         float time = glfwGetTime();
         float sinValue = sin(time) * 0.5f + 0.5f;
-        glm::mat4 trans = glm::mat4(1.0f);
-        float foo = sin(time) * 0.5f;
-        float bar = cos(time) * 0.5f;
-        trans = glm::translate(trans, glm::vec3(foo, bar, 0.0f));
-        trans = glm::scale(trans, glm::vec3(sinValue, sinValue, sinValue));
-        trans = glm::rotate(trans, time, glm::vec3(0.0f, 0.0f, 1.0f));
+        camPosZ += cam_dir_z;
+
+        glm::mat4 model = glm::mat4(1.0f);
+        glm::mat4 view = glm::mat4(1.0f);
+        glm::mat4 projection = glm::mat4(1.0f);
+
+        model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+        // note that we're translating the scene in the reverse direction of where we want to move (opengl is right-handed)
+        view = glm::translate(view, glm::vec3(0.0f, 0.0f, camPosZ));
+        projection = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
 
         // set shader state
         myShader.use();
-        myShader.setVec4f("myColor", sinValue, sinValue, 0.4f, 0.2f);
-        myShader.setVec2f("offset", foo, bar);
-        myShader.setFloat("t", sin(time) * 0.5f + 0.5f);
-        myShader.setMat4("transform", trans);
+        myShader.setMat4("model", model);
+        myShader.setMat4("view", view);
+        myShader.setMat4("projection", projection);
+        //myShader.setVec4f("myColor", sinValue, sinValue, 0.4f, 0.2f);
 
         //RENDERING
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);

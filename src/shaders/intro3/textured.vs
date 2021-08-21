@@ -1,6 +1,8 @@
 #version 330 core
-uniform vec2 offset;
-uniform mat4 transform;
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
 
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aCol;
@@ -13,5 +15,5 @@ void main()
 {
    color = aCol;
    uv = aUV;
-   gl_Position = transform * vec4(aPos, 1);// + vec4(offset, 0, 0);
+   gl_Position = projection * view * model * vec4(aPos, 1.0);
 }
