@@ -120,6 +120,18 @@ float vertices[] = {
     -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
     };
 
+    glm::vec3 positions[] = {
+        glm::vec3( 0.0f,  0.0f,  0.0f), 
+        glm::vec3( 2.0f,  5.0f, -15.0f), 
+        glm::vec3(-1.5f, -2.2f, -2.5f),  
+        glm::vec3(-3.8f, -2.0f, -12.3f),  
+        glm::vec3( 2.4f, -0.4f, -3.5f),  
+        glm::vec3(-1.7f,  3.0f, -7.5f),  
+        glm::vec3( 1.3f, -2.0f, -2.5f),  
+        glm::vec3( 1.5f,  2.0f, -2.5f), 
+        glm::vec3( 1.5f,  0.2f, -1.5f), 
+        glm::vec3(-1.3f,  1.0f, -1.5f) 
+    };
 
     // creating vertex buffer object and vertex arrays object
     uint VBO, VAO, EBO, texture1, texture2;
@@ -209,21 +221,12 @@ float vertices[] = {
         float sinValue = sin(time) * 0.5f + 0.5f;
         camPosZ += cam_dir_z;
 
-        glm::mat4 model = glm::mat4(1.0f);
         glm::mat4 view = glm::mat4(1.0f);
         glm::mat4 projection = glm::mat4(1.0f);
 
-        model = glm::rotate(model, time * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
         // note that we're translating the scene in the reverse direction of where we want to move (opengl is right-handed)
         view = glm::translate(view, glm::vec3(0.0f, 0.0f, camPosZ));
         projection = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
-
-        // set shader state
-        myShader.use();
-        myShader.setMat4("model", model);
-        myShader.setMat4("view", view);
-        myShader.setMat4("projection", projection);
-        //myShader.setVec4f("myColor", sinValue, sinValue, 0.4f, 0.2f);
 
         //RENDERING
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -236,7 +239,22 @@ float vertices[] = {
         glBindTexture(GL_TEXTURE_2D, texture2);
 
         glBindVertexArray(VAO); // seeing as we only have a single VAO there's no need to bind it every time, but we'll do so to keep things a bit more organized
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        for(int i = 0; i < sizeof(positions) / sizeof(*positions); i++) {
+            float angle = time * glm::radians(10.0f * i);
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, positions[i]);
+            model = glm::scale(model, glm::vec3(i * 0.15f, i * 0.15f, i * 0.15f));
+            model = glm::rotate(model, angle, glm::vec3(0.5f, 1.0f, 0.0f));
+
+            // set shader state
+            myShader.use();
+            myShader.setMat4("model", model);
+            myShader.setMat4("view", view);
+            myShader.setMat4("projection", projection);
+
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
+
         glBindVertexArray(0); // no need to unbind it every time
 
         //EVENTS
