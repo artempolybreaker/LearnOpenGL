@@ -18,6 +18,9 @@ glm::vec3 camFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 camUp = glm::vec3(0.0f, 1.0f, 0.0f);
 int windowWidth, windowHeight;
 
+float deltaTime = 0.0f;
+float lastFrame = 0.0f;
+
 //void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
@@ -37,9 +40,9 @@ void processInput(GLFWwindow *window)
     if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
         glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
 
-    float camSpeed = 0.1f;
+    float camSpeed = 3.5f * deltaTime;
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-        camSpeed = 0.5f;
+        camSpeed = 6.5f * deltaTime;
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
         camPos += camSpeed * camFront;
     if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
@@ -221,6 +224,10 @@ float vertices[] = {
 
     while (!glfwWindowShouldClose(window))
     {
+        float currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+
         //INPUT
         processInput(window);
 
