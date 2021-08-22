@@ -13,10 +13,13 @@
 
 typedef unsigned int uint;
 
+int windowWidth, windowHeight;
+
 glm::vec3 camPos = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 camFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 camUp = glm::vec3(0.0f, 1.0f, 0.0f);
-int windowWidth, windowHeight;
+float pitch = 0;
+float yaw = -90;
 
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
@@ -238,16 +241,10 @@ float vertices[] = {
         glm::mat4 projection = glm::mat4(1.0f);
         projection = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
         
-        // glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, camPosZ);
-        // glm::vec3 cameraTarget = glm::vec3(0.0f);
-        // glm::vec3 toCam = glm::normalize(cameraPos - cameraTarget);
-        // glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
-        // glm::vec3 cameraRight = glm::normalize(glm::cross(up, toCam));
-        // glm::vec3 cameraUp = glm::normalize(glm::cross(toCam, cameraRight));
-
-        float radius = 10.0f;
-        float camX = sin(time) * radius;
-        float camZ = cos(time) * radius;
+        glm::vec3 camDir;
+        camDir.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+        camDir.z = sin(glm::radians(pitch));
+        camDir.y = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 
         glm::mat4 view;
         view = glm::lookAt(camPos, camPos + camFront, camUp);
