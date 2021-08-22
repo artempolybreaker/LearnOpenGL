@@ -13,7 +13,9 @@
 
 typedef unsigned int uint;
 
-float cam_dir_z;
+glm::vec3 camPos = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 camFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 camUp = glm::vec3(0.0f, 1.0f, 0.0f);
 int windowWidth, windowHeight;
 
 //void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -26,7 +28,6 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 }
 void processInput(GLFWwindow *window)
 {
-    cam_dir_z= 0;
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
     if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
@@ -35,10 +36,18 @@ void processInput(GLFWwindow *window)
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
         glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+
+    float camSpeed = 0.1f;
+    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+        camSpeed = 0.5f;
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
-        cam_dir_z = 0.1f;
+        camPos += camSpeed * camFront;
     if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
-        cam_dir_z = -0.1f;
+        camPos -= camSpeed * camFront;
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+        camPos -= glm::normalize(glm::cross(camFront, camUp)) * camSpeed;
+    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+        camPos += glm::normalize(glm::cross(camFront, camUp)) * camSpeed;
 }
 
 int main()
@@ -210,7 +219,6 @@ float vertices[] = {
     myShader.setInt("texture1", 0);
     myShader.setInt("texture2", 1);
 
-    float camPosZ = -3.0f;
     while (!glfwWindowShouldClose(window))
     {
         //INPUT
@@ -219,14 +227,23 @@ float vertices[] = {
         //MATH
         float time = glfwGetTime();
         float sinValue = sin(time) * 0.5f + 0.5f;
-        camPosZ += cam_dir_z;
 
-        glm::mat4 view = glm::mat4(1.0f);
         glm::mat4 projection = glm::mat4(1.0f);
-
-        // note that we're translating the scene in the reverse direction of where we want to move (opengl is right-handed)
-        view = glm::translate(view, glm::vec3(0.0f, 0.0f, camPosZ));
         projection = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
+        
+        // glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, camPosZ);
+        // glm::vec3 cameraTarget = glm::vec3(0.0f);
+        // glm::vec3 toCam = glm::normalize(cameraPos - cameraTarget);
+        // glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
+        // glm::vec3 cameraRight = glm::normalize(glm::cross(up, toCam));
+        // glm::vec3 cameraUp = glm::normalize(glm::cross(toCam, cameraRight));
+
+        float radius = 10.0f;
+        float camX = sin(time) * radius;
+        float camZ = cos(time) * radius;
+
+        glm::mat4 view;
+        view = glm::lookAt(camPos, camPos + camFront, camUp);
 
         //RENDERING
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
