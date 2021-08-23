@@ -9,4 +9,7 @@ Execution of tutorials from https://learnopengl.com/ on MacOS Big Sur (on M1 chi
 ![Transformating Quad](./docs/resources/drunk_quad.gif)
 
 ### Intro - Spaces:
-![Transformating Quad](./docs/resources/cubes.gif)
+![3D Quads](./docs/resources/cubes.gif)
+
+### Intro - Spaces:
+![Proper Fly Camera](./docs/resources/camera.gif)
