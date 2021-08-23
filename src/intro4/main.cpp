@@ -13,7 +13,8 @@
 
 typedef unsigned int uint;
 
-int windowWidth, windowHeight;
+int windowWidth = 800;
+int windowHeight = 600;
 
 glm::vec3 camPos = glm::vec3(0.0f, 0.0f, 3.0f);
 glm::vec3 camFront = glm::vec3(0.0f, 0.0f, -1.0f);
@@ -36,24 +37,60 @@ void processInput(GLFWwindow *window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
-    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
         glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
 
     float camSpeed = 3.5f * deltaTime;
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
         camSpeed = 6.5f * deltaTime;
-    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         camPos += camSpeed * camFront;
-    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
         camPos -= camSpeed * camFront;
-    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
         camPos -= glm::normalize(glm::cross(camFront, camUp)) * camSpeed;
-    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camPos += glm::normalize(glm::cross(camFront, camUp)) * camSpeed;
+}
+
+bool firstMouseMove = true;
+float lastX = windowWidth * 0.5f;
+float lastY = windowHeight * 0.5f;
+void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
+    if (firstMouseMove) {
+        lastX = xpos;
+        lastY = ypos;
+        firstMouseMove = false;
+    }
+
+    float xOffset = xpos - lastX;
+    float yOffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+    lastX = xpos;
+    lastY = ypos;
+
+    const float sensibility = 0.1f;
+    xOffset *= sensibility;
+    yOffset *= sensibility;
+    
+    yaw += xOffset;
+    pitch += yOffset;
+
+    if (pitch > 89.0f) {
+        pitch = 89.0f;
+    }
+    if (pitch < -89.0f) {
+        pitch = -89.0f;
+    }
+ 
+    glm::vec3 camDir;
+    camDir.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+    camDir.y = sin(glm::radians(pitch));
+    camDir.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+    camFront = glm::normalize(camDir);
 }
 
 int main()
@@ -79,6 +116,8 @@ int main()
         return -1;
     }
     glfwMakeContextCurrent(window);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetCursorPosCallback(window, mouse_callback);
 
     // load OpenGL functions in runtime with help of GLAD
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -240,11 +279,6 @@ float vertices[] = {
 
         glm::mat4 projection = glm::mat4(1.0f);
         projection = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
-        
-        glm::vec3 camDir;
-        camDir.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-        camDir.z = sin(glm::radians(pitch));
-        camDir.y = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
 
         glm::mat4 view;
         view = glm::lookAt(camPos, camPos + camFront, camUp);
