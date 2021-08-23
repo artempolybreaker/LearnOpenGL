@@ -9,6 +9,7 @@
 #include "../include/glad/glad.h"
 #include "../include/GLFW/glfw3.h"
 #include "../shader.h"
+#include "../camera.h"
 #include "../include/stb/stb_image.h"
 
 typedef unsigned int uint;
@@ -16,16 +17,11 @@ typedef unsigned int uint;
 int windowWidth = 800;
 int windowHeight = 600;
 
-glm::vec3 camPos = glm::vec3(0.0f, 0.0f, 3.0f);
-glm::vec3 camFront = glm::vec3(0.0f, 0.0f, -1.0f);
-glm::vec3 camUp = glm::vec3(0.0f, 1.0f, 0.0f);
-float pitch = 0;
-float yaw = -90;
-
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
-//void framebuffer_size_callback(GLFWwindow* window, int width, int height);
+Camera cam;
+
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
     windowHeight = height;
@@ -44,17 +40,21 @@ void processInput(GLFWwindow *window)
     if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
         glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
 
-    float camSpeed = 3.5f * deltaTime;
-    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-        camSpeed = 6.5f * deltaTime;
+    glm::vec2 inputAxis = glm::vec2(0.0f, 0.0f);
+    bool shiftPressed = false;
+
+    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS)
+        shiftPressed = true;
     if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        camPos += camSpeed * camFront;
+        inputAxis.y = 1;
     if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        camPos -= camSpeed * camFront;
+        inputAxis.y = -1;
     if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        camPos -= glm::normalize(glm::cross(camFront, camUp)) * camSpeed;
+        inputAxis.x = -1;
     if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        camPos += glm::normalize(glm::cross(camFront, camUp)) * camSpeed;
+        inputAxis.x = 1;
+
+    cam.UpdateCameraPosition(inputAxis, deltaTime, shiftPressed);
 }
 
 bool firstMouseMove = true;
@@ -72,33 +72,11 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
     lastX = xpos;
     lastY = ypos;
 
-    const float sensibility = 0.1f;
-    xOffset *= sensibility;
-    yOffset *= sensibility;
-    
-    yaw += xOffset;
-    pitch += yOffset;
-
-    if (pitch > 89.0f) {
-        pitch = 89.0f;
-    }
-    if (pitch < -89.0f) {
-        pitch = -89.0f;
-    }
- 
-    glm::vec3 camDir;
-    camDir.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-    camDir.y = sin(glm::radians(pitch));
-    camDir.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-    camFront = glm::normalize(camDir);
+    cam.UpdateCameraRotation(glm::vec2(xOffset, yOffset), deltaTime);
 }
 
-float fov = 45.0f;
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
-    float speed = 5.0f * deltaTime;
-    fov -= (float)yoffset * speed;
-    if (fov < 1.0f) fov = 1.0f;
-    if (fov > 45.0f) fov = 45.0f;
+    cam.UpdateCameraZoom(yoffset, deltaTime);
 }
 
 int main()
@@ -286,11 +264,8 @@ float vertices[] = {
         float time = glfwGetTime();
         float sinValue = sin(time) * 0.5f + 0.5f;
 
-        glm::mat4 projection = glm::mat4(1.0f);
-        projection = glm::perspective(glm::radians(fov), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
-
-        glm::mat4 view;
-        view = glm::lookAt(camPos, camPos + camFront, camUp);
+        glm::mat4 projection = cam.GetProjectionMat((float)windowWidth/(float)windowHeight);
+        glm::mat4 view = cam.GetViewMat();
 
         //RENDERING
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
