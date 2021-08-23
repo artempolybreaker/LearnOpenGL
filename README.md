@@ -11,5 +11,5 @@ Execution of tutorials from https://learnopengl.com/ on MacOS Big Sur (on M1 chi
 ### Intro - Spaces:
 ![3D Quads](./docs/resources/cubes.gif)
 
-### Intro - Spaces:
+### Intro - Camera:
 ![Proper Fly Camera](./docs/resources/camera.gif)
