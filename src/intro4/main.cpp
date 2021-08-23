@@ -93,6 +93,14 @@ void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
     camFront = glm::normalize(camDir);
 }
 
+float fov = 45.0f;
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
+    float speed = 5.0f * deltaTime;
+    fov -= (float)yoffset * speed;
+    if (fov < 1.0f) fov = 1.0f;
+    if (fov > 45.0f) fov = 45.0f;
+}
+
 int main()
 {
     if (!glfwInit())
@@ -118,6 +126,7 @@ int main()
     glfwMakeContextCurrent(window);
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetScrollCallback(window, scroll_callback);
 
     // load OpenGL functions in runtime with help of GLAD
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -278,7 +287,7 @@ float vertices[] = {
         float sinValue = sin(time) * 0.5f + 0.5f;
 
         glm::mat4 projection = glm::mat4(1.0f);
-        projection = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
+        projection = glm::perspective(glm::radians(fov), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
 
         glm::mat4 view;
         view = glm::lookAt(camPos, camPos + camFront, camUp);
