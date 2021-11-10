@@ -50,7 +50,7 @@ public:
     void UpdateCameraPosition(glm::vec2 input, float deltaTime, bool shiftPressed = false) {
         float camSpeed = MOVEMENT_SPEED * deltaTime;
         if (shiftPressed)
-            camSpeed = 3 * MOVEMENT_SPEED * deltaTime;
+            camSpeed *= 3;
 
         if (input.x > MOVEMENT_DEAD_ZONE) {
             camPos += glm::normalize(glm::cross(camFront, camUp)) * camSpeed;
