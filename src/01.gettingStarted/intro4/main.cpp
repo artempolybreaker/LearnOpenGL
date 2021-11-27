@@ -246,7 +246,7 @@ int main()
 
     glEnable(GL_DEPTH_TEST);
 
-    Shader myShader("./src/gettingStarted/intro4/shaders/textured.vs", "./src/gettingStarted/intro4/shaders/textured.fs");
+    Shader myShader("./src/01.gettingStarted/intro4/shaders/textured.vs", "./src/01.gettingStarted/intro4/shaders/textured.fs");
     myShader.use();
     myShader.setInt("texture1", 0);
     myShader.setInt("texture2", 1);
