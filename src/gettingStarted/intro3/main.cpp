@@ -3,25 +3,20 @@
 
 #include <iostream>
 #include <math.h>
-#include "../include/glm/glm.hpp"
-#include "../include/glm/gtc/matrix_transform.hpp"
-#include "../include/glm/gtc/type_ptr.hpp"
-#include "../include/glad/glad.h"
-#include "../include/GLFW/glfw3.h"
-#include "../shader.h"
-#include "../camera.h"
-#include "../include/stb/stb_image.h"
+#include "../../include/glm/glm.hpp"
+#include "../../include/glm/gtc/matrix_transform.hpp"
+#include "../../include/glm/gtc/type_ptr.hpp"
+#include "../../include/glad/glad.h"
+#include "../../include/GLFW/glfw3.h"
+#include "../../shader.h"
+#include "../../include/stb/stb_image.h"
 
 typedef unsigned int uint;
 
-int windowWidth = 800;
-int windowHeight = 600;
+float cam_dir_z;
+int windowWidth, windowHeight;
 
-float deltaTime = 0.0f;
-float lastFrame = 0.0f;
-
-Camera cam;
-
+//void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
     windowHeight = height;
@@ -31,52 +26,19 @@ void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 }
 void processInput(GLFWwindow *window)
 {
+    cam_dir_z= 0;
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
-    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
         glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
-
-    glm::vec2 inputAxis = glm::vec2(0.0f, 0.0f);
-    bool shiftPressed = false;
-
-    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS)
-        shiftPressed = true;
-    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        inputAxis.y = 1;
-    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        inputAxis.y = -1;
-    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        inputAxis.x = -1;
-    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        inputAxis.x = 1;
-
-    cam.UpdateCameraPosition(inputAxis, deltaTime, shiftPressed);
-}
-
-bool firstMouseMove = true;
-float lastX = windowWidth * 0.5f;
-float lastY = windowHeight * 0.5f;
-void mouse_callback(GLFWwindow* window, double xpos, double ypos) {
-    if (firstMouseMove) {
-        lastX = xpos;
-        lastY = ypos;
-        firstMouseMove = false;
-    }
-
-    float xOffset = xpos - lastX;
-    float yOffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
-    lastX = xpos;
-    lastY = ypos;
-
-    cam.UpdateCameraRotation(glm::vec2(xOffset, yOffset), deltaTime);
-}
-
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
-    cam.UpdateCameraZoom(yoffset, deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS)
+        cam_dir_z = 0.1f;
+    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS)
+        cam_dir_z = -0.1f;
 }
 
 int main()
@@ -102,9 +64,6 @@ int main()
         return -1;
     }
     glfwMakeContextCurrent(window);
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    glfwSetCursorPosCallback(window, mouse_callback);
-    glfwSetScrollCallback(window, scroll_callback);
 
     // load OpenGL functions in runtime with help of GLAD
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
@@ -117,7 +76,7 @@ int main()
     glViewport(0, 0, windowWidth, windowHeight);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
-    float vertices[] = {
+float vertices[] = {
     -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
      0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
      0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
@@ -246,26 +205,28 @@ int main()
 
     glEnable(GL_DEPTH_TEST);
 
-    Shader myShader("./src/shaders/intro4/textured.vs", "./src/shaders/intro4/textured.fs");
+    Shader myShader("./src/gettingStarted/intro3/shaders/textured.vs", "./src/gettingStarted/intro3/shaders/textured.fs");
     myShader.use();
     myShader.setInt("texture1", 0);
     myShader.setInt("texture2", 1);
 
+    float camPosZ = -3.0f;
     while (!glfwWindowShouldClose(window))
     {
-        float currentFrame = glfwGetTime();
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
-
         //INPUT
         processInput(window);
 
         //MATH
         float time = glfwGetTime();
         float sinValue = sin(time) * 0.5f + 0.5f;
+        camPosZ += cam_dir_z;
 
-        glm::mat4 projection = cam.GetProjectionMat((float)windowWidth/(float)windowHeight);
-        glm::mat4 view = cam.GetViewMat();
+        glm::mat4 view = glm::mat4(1.0f);
+        glm::mat4 projection = glm::mat4(1.0f);
+
+        // note that we're translating the scene in the reverse direction of where we want to move (opengl is right-handed)
+        view = glm::translate(view, glm::vec3(0.0f, 0.0f, camPosZ));
+        projection = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
 
         //RENDERING
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);

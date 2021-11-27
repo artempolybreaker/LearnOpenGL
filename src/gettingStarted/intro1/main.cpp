@@ -3,10 +3,10 @@
 
 #include <iostream>
 #include <math.h>
-#include "../include/glad/glad.h"
-#include "../include/GLFW/glfw3.h"
-#include "../shader.h"
-#include "../include/stb/stb_image.h"
+#include "../../include/glad/glad.h"
+#include "../../include/GLFW/glfw3.h"
+#include "../../shader.h"
+#include "../../include/stb/stb_image.h"
 
 typedef unsigned int uint;
 
@@ -152,7 +152,7 @@ int main()
     // uncomment this call to draw in wireframe polygons.
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-    Shader myShader("./src/shaders/intro1/textured.vs", "./src/shaders/intro1/textured.fs");
+    Shader myShader("./src/gettingStarted/intro1/shaders/textured.vs", "./src/gettingStarted/intro1/shaders/textured.fs");
     myShader.use();
     myShader.setInt("texture1", 0);
     myShader.setInt("texture2", 1);

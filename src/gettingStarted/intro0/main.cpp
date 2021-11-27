@@ -2,9 +2,9 @@
 
 #include <iostream>
 #include <math.h>
-#include "../include/glad/glad.h"
-#include "../include/GLFW/glfw3.h"
-#include "../shader.h"
+#include "../../include/glad/glad.h"
+#include "../../include/GLFW/glfw3.h"
+#include "../../shader.h"
 
 typedef unsigned int uint;
 
@@ -155,7 +155,7 @@ int main()
 
 
     //std::cout << "before constructor..." << std::endl;
-    Shader myShader("./src/shaders/intro0/shaderVert.vs", "./src/shaders/intr0/shaderFrag.fs");
+    Shader myShader("./src/gettingStarted/intro0/shaders/shaderVert.vs", "./src/gettingStarted/intro0/shaders/shaderFrag.fs");
     while (!glfwWindowShouldClose(window))
     {
         //INPUT
