@@ -8,8 +8,51 @@
 
 const int WINDOW_WIDTH = 1024;
 const int WINDOW_HEIGHT = 768;
+int windowWidth = WINDOW_WIDTH;
+int windowHeight = WINDOW_HEIGHT;
+
+float cubeVertices[] = {
+-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+ 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+ 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+ 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+ 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+ 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+ 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+ 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+ 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+ 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+ 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+ 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+ 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+ 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+ 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+ 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+ 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+ 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+ 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+};
 
 void onWindowSizeChanged(GLFWwindow* window, int width, int height){
+    windowWidth = width;
+    windowHeight = height;
     glViewport(0, 0, width, height);
     std::cout << "Changed window size: " << width << "; " << height << std::endl;
 }
@@ -22,7 +65,7 @@ int main() {
 
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); // 
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 
     GLFWwindow* window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "OpengGL Colors", NULL, NULL);
@@ -44,31 +87,23 @@ int main() {
     glViewport(0, 0, width, height);
     glfwSetFramebufferSizeCallback(window, onWindowSizeChanged);
 
-    float vertices[] = {
-         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f
-    };
-
     glm::vec3 positions[] = {
         glm::vec3( 0.0f,  0.0f,  0.0f), 
+        glm::vec3( 3.0f,  0.0f,  0.0f), 
     };
 
     uint VBO, VAO, lightVAO;
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
-    glGenBuffers(1, &VBO);
+    // glGenBuffers(1, &VBO);
 
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)(3 * sizeof(float)));
+    glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(0);
     glEnableVertexAttribArray(1);
 
@@ -81,9 +116,31 @@ int main() {
     shader.use();
 
     while(!glfwWindowShouldClose(window)) {
+        // math
+        glm::mat4 view = glm::mat4(1.0f);
+        glm::mat4 projection = glm::mat4(1.0f);
+
+        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -8.0f));        
+        projection = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
+
         // rendering
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        glBindVertexArray(VAO);
+        for (int i = 0, n = sizeof(positions) / sizeof(*positions); i < n; i++) {
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, positions[i]);
+            model = glm::scale(model, glm::vec3(1.0f));
+            model = glm::rotate(model, glm::radians(15.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+            
+            shader.setMat4("model", model);
+            shader.setMat4("view", view);
+            shader.setMat4("projection", projection);
+
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
+        glBindVertexArray(0); // no need to unbind it every time but ok
 
         // events
         glfwSwapBuffers(window);
