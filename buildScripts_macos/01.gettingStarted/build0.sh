@@ -1,1 +1,1 @@
-g++ ./src/01.gettingStarted/intro0/main.cpp ./src/glad.c -L/Users/Meralium/lib/libs/ -lglfw3 -framework Cocoa -framework OpenGL -framework IOKit
+g++ ./src/01.gettingStarted/intro0/main.cpp ./src/glad.c -L./libs/lib-arm64 -lglfw3 -framework Cocoa -framework OpenGL -framework IOKit
