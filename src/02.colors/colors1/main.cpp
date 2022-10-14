@@ -96,7 +96,6 @@ int main() {
     glm::vec3 positions[] = {
         glm::vec3( 0.0f,  0.0f,  0.0f), 
     };
-    glm::vec3 lightPosition = glm::vec3( 3.0f,  0.0f,  0.0f);
 
     uint VBO, VAO, lightVAO;
 
@@ -131,6 +130,7 @@ int main() {
     while(!glfwWindowShouldClose(window)) {
         // params
         glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
+        glm::vec3 lightPosition = glm::vec3(3.0f,  0.0f,  0.0f);
 
         // math
         glm::mat4 view = glm::mat4(1.0f);
@@ -158,6 +158,7 @@ int main() {
             
             lightingShader.setVec3f("objectColor", glm::vec3(1.0f, 1.0f, 0.2f));
             lightingShader.setVec3f("lightColor", lightColor);
+            lightingShader.setVec3f("lightPos", lightPosition);
 
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
