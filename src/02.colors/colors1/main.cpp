@@ -162,6 +162,7 @@ int main() {
     float deltaTime = 0.0f;
     float lastFrameTime = 0.0f;
     while(!glfwWindowShouldClose(window)) {
+        // time
         float currentFrameTime = glfwGetTime();
         deltaTime = currentFrameTime - lastFrameTime;
         lastFrameTime = currentFrameTime;
