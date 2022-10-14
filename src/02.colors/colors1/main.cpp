@@ -56,11 +56,43 @@ float cubeVertices[] = {
 -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f, 1.0f, 0.0f
 };
 
+struct Input {
+    glm::vec2 inputAxis;
+    bool shiftPressed;
+};
+
 void onWindowSizeChanged(GLFWwindow* window, int width, int height){
     windowWidth = width;
     windowHeight = height;
     glViewport(0, 0, width, height);
     std::cout << "Changed window size: " << width << "; " << height << std::endl;
+}
+Input getInput(GLFWwindow *window)
+{
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+        glfwSetWindowShouldClose(window, true);
+    if (glfwGetKey(window, GLFW_KEY_1) == GLFW_PRESS)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    if (glfwGetKey(window, GLFW_KEY_2) == GLFW_PRESS)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    if (glfwGetKey(window, GLFW_KEY_3) == GLFW_PRESS)
+        glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+
+    Input input;
+    input.inputAxis = glm::vec2(0.0f, 0.0f);
+    input.shiftPressed = false;
+    if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS)
+        input.shiftPressed = true;
+    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        input.inputAxis.y = 1;
+    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        input.inputAxis.y = -1;
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        input.inputAxis.x = -1;
+    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS || glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        input.inputAxis.x = 1;
+
+    return input;
 }
 
 int main() {
@@ -127,7 +159,16 @@ int main() {
     Shader lightingShader("./src/02.colors/colors1/shaders/basic.vs", "./src/02.colors/colors1/shaders/basic.fs");
     Shader shaderLightObject("./src/02.colors/colors1/shaders/basic_light.vs", "./src/02.colors/colors1/shaders/basic_light.fs");
 
+    float deltaTime = 0.0f;
+    float lastFrameTime = 0.0f;
     while(!glfwWindowShouldClose(window)) {
+        float currentFrameTime = glfwGetTime();
+        deltaTime = currentFrameTime - lastFrameTime;
+        lastFrameTime = currentFrameTime;
+
+        // input
+        Input input = getInput(window);
+
         // params
         glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
         glm::vec3 lightPosition = glm::vec3(3.0f,  0.0f,  0.0f);
@@ -147,10 +188,11 @@ int main() {
         lightingShader.use();
         glBindVertexArray(VAO);
         for (int i = 0, n = sizeof(positions) / sizeof(*positions); i < n; i++) {
+            float angle = currentFrameTime * glm::radians(20.0f);
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, positions[i]);
             model = glm::scale(model, glm::vec3(1.0f));
-            model = glm::rotate(model, glm::radians(45.0f), glm::vec3(0.5f, 1.0f, 0.5f));
+            model = glm::rotate(model, angle, glm::vec3(0.5f, 1.0f, 0.5f));
             
             lightingShader.setMat4("model", model);
             lightingShader.setMat4("view", view);
