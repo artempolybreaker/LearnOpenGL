@@ -3,6 +3,8 @@
 in vec2 uv;
 out vec4 FragColor;
 
+uniform vec3 objectColor;
+uniform vec3 lightColor;
 // uniform sampler2D texture1;
 
 void main()

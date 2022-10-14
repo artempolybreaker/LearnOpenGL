@@ -194,14 +194,14 @@ int main()
     // load image
     stbi_set_flip_vertically_on_load(true);
     int width, height, channels;
-    unsigned char* imageData = stbi_load("./resources/bricks_tex_named.jpg", &width, &height, &channels, 0);
+    unsigned char* imageData = stbi_load("/Users/archie-klang/tmp/resources/seed_logo.jpeg", &width, &height, &channels, 0);
 
     if (imageData) {
         // generate texture
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, imageData);
         glGenerateMipmap(GL_TEXTURE_2D);
     } else {
-        std::cout << "Couldn't load the image under ./resources/bricks_tex_named.jpg" << std::endl;
+        std::cout << "Couldn't load the image under /Users/archie-klang/tmp/resources/seed_logo.jpeg" << std::endl;
         return -1;
     }
     // unload image
