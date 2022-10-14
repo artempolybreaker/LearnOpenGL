@@ -1,0 +1,1 @@
+g++ ./src/02.colors/colors1/main.cpp ./src/glad.c -L./libs/lib-arm64 -lglfw3 -framework Cocoa -framework OpenGL -framework IOKit
