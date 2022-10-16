@@ -172,7 +172,7 @@ int main() {
 
         // params
         glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
-        glm::vec3 lightPosition = glm::vec3(3.0f,  0.0f,  0.0f);
+        glm::vec3 lightPosition = glm::vec3(3.0f,  -1.0f,  0.0f);
 
         // math
         glm::mat4 view = glm::mat4(1.0f);
@@ -199,7 +199,7 @@ int main() {
             lightingShader.setMat4("view", view);
             lightingShader.setMat4("projection", projection);
             
-            lightingShader.setVec3f("objectColor", glm::vec3(1.0f, 1.0f, 0.2f));
+            lightingShader.setVec3f("objectColor", glm::vec3(1.0f, 0.0f, 0.2f));
             lightingShader.setVec3f("lightColor", lightColor);
             lightingShader.setVec3f("lightPos", lightPosition);
 
