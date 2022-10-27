@@ -161,6 +161,7 @@ int main() {
 
     float deltaTime = 0.0f;
     float lastFrameTime = 0.0f;
+    glm::vec3 lightStartPosition = glm::vec3(0.0f,  0.0f,  0.0f);
     while(!glfwWindowShouldClose(window)) {
         // time
         float currentFrameTime = glfwGetTime();
@@ -171,8 +172,10 @@ int main() {
         Input input = getInput(window);
 
         // params
+        float sinPos = sin(currentFrameTime) * 1.5f;
+        float cosPos = cos(currentFrameTime) * 1.5f;
+        glm::vec3 lightPosition = lightStartPosition + glm::vec3(sinPos, 0.0f, cosPos);
         glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
-        glm::vec3 lightPosition = glm::vec3(3.0f,  -1.0f,  0.0f);
 
         // math
         glm::mat4 view = glm::mat4(1.0f);
