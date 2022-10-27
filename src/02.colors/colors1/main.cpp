@@ -180,10 +180,22 @@ int main() {
 
     float deltaTime = 0.0f;
     float lastFrameTime = 0.0f;
+    bool isPaused = false;
     glm::vec3 lightStartPosition = glm::vec3(0.0f,  0.0f,  0.0f);
+
+    // uniform inputs
+    float ambientStrength, diffuseStrength, specularStrength, specularFactor;
+    ambientStrength = diffuseStrength = specularStrength = 0.1f;
+    specularFactor = 512.0f;
+
     while(!glfwWindowShouldClose(window)) {
         // time
-        float currentFrameTime = glfwGetTime();
+        float currentFrameTime = 0.0f;
+        if (isPaused) {
+            currentFrameTime = lastFrameTime;
+        } else {
+            currentFrameTime = glfwGetTime();
+        }
         deltaTime = currentFrameTime - lastFrameTime;
         lastFrameTime = currentFrameTime;
 
@@ -200,7 +212,8 @@ int main() {
         glm::mat4 view = glm::mat4(1.0f);
         glm::mat4 projection = glm::mat4(1.0f);
 
-        view = glm::translate(view, glm::vec3(0.0f, 0.0f, -6.0f));        
+        glm::vec3 viewPos = glm::vec3(0.0f, 0.0f, -6.0f);
+        view = glm::translate(view, viewPos);        
         projection = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
 
         // clear
@@ -216,7 +229,7 @@ int main() {
         lightingShader.use();
         glBindVertexArray(VAO);
         for (int i = 0, n = sizeof(positions) / sizeof(*positions); i < n; i++) {
-            float angle = currentFrameTime * glm::radians(20.0f);
+            float angle = 0.0f;//currentFrameTime * glm::radians(20.0f);
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, positions[i]);
             model = glm::scale(model, glm::vec3(1.0f));
@@ -229,6 +242,12 @@ int main() {
             lightingShader.setVec3f("objectColor", glm::vec3(1.0f, 0.0f, 0.2f));
             lightingShader.setVec3f("lightColor", lightColor);
             lightingShader.setVec3f("lightPos", lightPosition);
+            lightingShader.setVec3f("worldViewPos", viewPos);
+
+            lightingShader.setFloat("ambientStrength", ambientStrength);
+            lightingShader.setFloat("diffuseStrength", diffuseStrength);
+            lightingShader.setFloat("specularStrength", specularStrength);
+            lightingShader.setFloat("specularFactor", specularFactor);
 
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
@@ -251,6 +270,11 @@ int main() {
         // imgui
         ImGui::Begin("My name window");
         ImGui::Text("Holy shit imgui is working");
+        ImGui::Checkbox("Pause", &isPaused);
+        ImGui::SliderFloat("Ambient", &ambientStrength, 0.1f, 5.0f);
+        ImGui::SliderFloat("Diffuse", &diffuseStrength, 0.1f, 5.0f);
+        ImGui::SliderFloat("Specular", &specularStrength, 0.1f, 5.0f);
+        ImGui::SliderFloat("Specular Factor", &specularFactor, 8.0f, 2048.0f);
         ImGui::End();
 
         ImGui::Render();
