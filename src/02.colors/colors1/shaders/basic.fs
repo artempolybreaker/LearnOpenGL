@@ -28,9 +28,9 @@ void main()
 
    // specular
    float specularStrength = 0.5;
-   vec3 viewDir = normalize(worldViewPos - worldPos);
-   vec3 reflectDir = reflect(-toLight, worldNormal);
-   float sp = pow(max(dot(viewDir, reflectDir), 0.0), 256);
+   vec3 toView = normalize(worldViewPos - worldPos);
+   vec3 halfway = normalize(toLight + toView);
+   float sp = pow(max(dot(worldNormal, halfway), 0.0), 512);
    vec3 spec = lightColor * specularStrength * sp;
 
    vec3 result = objectColor * (ambient + diffuse + spec);
