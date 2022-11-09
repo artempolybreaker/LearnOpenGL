@@ -229,7 +229,7 @@ int main() {
         lightingShader.use();
         glBindVertexArray(VAO);
         for (int i = 0, n = sizeof(positions) / sizeof(*positions); i < n; i++) {
-            float angle = 0.0f;//currentFrameTime * glm::radians(20.0f);
+            float angle = currentFrameTime * glm::radians(20.0f);
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, positions[i]);
             model = glm::scale(model, glm::vec3(1.0f));
