@@ -271,9 +271,9 @@ int main() {
         ImGui::Begin("My name window");
         ImGui::Text("Holy shit imgui is working");
         ImGui::Checkbox("Pause", &isPaused);
-        ImGui::SliderFloat("Ambient", &ambientStrength, 0.1f, 5.0f);
-        ImGui::SliderFloat("Diffuse", &diffuseStrength, 0.1f, 5.0f);
-        ImGui::SliderFloat("Specular", &specularStrength, 0.1f, 5.0f);
+        ImGui::SliderFloat("Ambient", &ambientStrength, 0.1f, 1.0f);
+        ImGui::SliderFloat("Diffuse", &diffuseStrength, 0.1f, 1.0f);
+        ImGui::SliderFloat("Specular", &specularStrength, 0.1f, 1.0f);
         ImGui::SliderFloat("Specular Factor", &specularFactor, 8.0f, 2048.0f);
         ImGui::End();
 
