@@ -175,8 +175,8 @@ int main() {
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glEnable(GL_DEPTH_TEST);
 
-    Shader lightingShader("./src/02.colors/colors1/shaders/basic.vs", "./src/02.colors/colors1/shaders/basic.fs");
-    Shader shaderLightObject("./src/02.colors/colors1/shaders/basic_light.vs", "./src/02.colors/colors1/shaders/basic_light.fs");
+    Shader lightingShader("./src/02.colors/colors2/shaders/basic.vs", "./src/02.colors/colors2/shaders/basic.fs");
+    Shader shaderLightObject("./src/02.colors/colors2/shaders/basic_light.vs", "./src/02.colors/colors2/shaders/basic_light.fs");
 
     float deltaTime = 0.0f;
     float lastFrameTime = 0.0f;
@@ -184,9 +184,11 @@ int main() {
     glm::vec3 lightStartPosition = glm::vec3(0.0f,  0.0f,  0.0f);
 
     // uniform inputs
-    float ambientStrength, diffuseStrength, specularStrength, specularFactor;
-    ambientStrength = diffuseStrength = specularStrength = 0.1f;
-    specularFactor = 512.0f;
+    glm::vec3 ambient, diffuse, specular;
+    float shininess = 32.0f;
+    ambient = glm::vec3(0.1f,0.5f,0.5f);
+    diffuse = glm::vec3(0.5f,0.1f,0.5f);
+    specular = glm::vec3(0.5f,0.5f,0.1f);
 
     while(!glfwWindowShouldClose(window)) {
         // time
@@ -244,10 +246,10 @@ int main() {
             lightingShader.setVec3f("lightPos", lightPosition);
             lightingShader.setVec3f("worldViewPos", viewPos);
 
-            lightingShader.setFloat("ambientStrength", ambientStrength);
-            lightingShader.setFloat("diffuseStrength", diffuseStrength);
-            lightingShader.setFloat("specularStrength", specularStrength);
-            lightingShader.setFloat("specularFactor", specularFactor);
+            lightingShader.setVec3f("material.ambient", ambient);
+            lightingShader.setVec3f("material.diffuse", diffuse);
+            lightingShader.setVec3f("material.specular", specular);
+            lightingShader.setFloat("material.shininess", shininess);
 
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
@@ -271,10 +273,10 @@ int main() {
         ImGui::Begin("My name window");
         ImGui::Text("Holy shit imgui is working");
         ImGui::Checkbox("Pause", &isPaused);
-        ImGui::SliderFloat("Ambient", &ambientStrength, 0.1f, 1.0f);
-        ImGui::SliderFloat("Diffuse", &diffuseStrength, 0.1f, 1.0f);
-        ImGui::SliderFloat("Specular", &specularStrength, 0.1f, 1.0f);
-        ImGui::SliderFloat("Specular Factor", &specularFactor, 8.0f, 2048.0f);
+        ImGui::SliderFloat3("Ambient", (float*)&ambient, 0.0f, 1.0f);
+        ImGui::SliderFloat3("Diffuse",  (float*)&diffuse, 0.0f, 1.0f);
+        ImGui::SliderFloat3("Specular",  (float*)&specular, 0.0f, 1.0f);
+        ImGui::SliderFloat("Specular Factor", &shininess, 8.0f, 2048.0f);
         ImGui::End();
 
         ImGui::Render();
