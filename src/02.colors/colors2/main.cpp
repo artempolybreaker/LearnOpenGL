@@ -181,14 +181,18 @@ int main() {
     float deltaTime = 0.0f;
     float lastFrameTime = 0.0f;
     bool isPaused = false;
+    bool isDiscoMode = false;
     glm::vec3 lightStartPosition = glm::vec3(0.0f,  0.0f,  0.0f);
 
     // uniform inputs
-    glm::vec3 ambient, diffuse, specular;
+    glm::vec3 ambient, diffuse, specular, lightAmbient, lightDiffuse, lightSpecular;
     float shininess = 32.0f;
-    ambient = glm::vec3(0.1f,0.5f,0.5f);
+    ambient = glm::vec3(0.1f,0.1f,0.1f);
     diffuse = glm::vec3(0.5f,0.1f,0.5f);
     specular = glm::vec3(0.5f,0.5f,0.1f);
+    lightAmbient = glm::vec3(0.1f,0.1f,0.1f);
+    lightDiffuse = glm::vec3(0.5f,0.5f,0.5f);
+    lightSpecular = glm::vec3(1.0f,1.0f,1.0f);
 
     while(!glfwWindowShouldClose(window)) {
         // time
@@ -217,6 +221,14 @@ int main() {
         glm::vec3 viewPos = glm::vec3(0.0f, 0.0f, -6.0f);
         view = glm::translate(view, viewPos);        
         projection = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
+        
+        glm::vec3 lightPositionVS = view * glm::vec4(lightPosition, 1.0f);
+
+        if (isDiscoMode) {
+            lightColor.x = sin(currentFrameTime) * 2.0f;
+            lightColor.y = sin(currentFrameTime) * 0.7f;
+            lightColor.z = sin(currentFrameTime) * 1.3f;
+        }
 
         // clear
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -241,10 +253,10 @@ int main() {
             lightingShader.setMat4("view", view);
             lightingShader.setMat4("projection", projection);
             
-            lightingShader.setVec3f("objectColor", glm::vec3(1.0f, 0.0f, 0.2f));
-            lightingShader.setVec3f("lightColor", lightColor);
-            lightingShader.setVec3f("lightPos", lightPosition);
-            lightingShader.setVec3f("worldViewPos", viewPos);
+            lightingShader.setVec3f("light.ambient", lightAmbient * lightColor);
+            lightingShader.setVec3f("light.diffuse", lightDiffuse * lightColor);
+            lightingShader.setVec3f("light.specular", lightSpecular);
+            lightingShader.setVec3f("light.positionVS", lightPositionVS);
 
             lightingShader.setVec3f("material.ambient", ambient);
             lightingShader.setVec3f("material.diffuse", diffuse);
@@ -271,8 +283,13 @@ int main() {
 
         // imgui
         ImGui::Begin("My name window");
-        ImGui::Text("Holy shit imgui is working");
         ImGui::Checkbox("Pause", &isPaused);
+        ImGui::Text("Light Properties:");
+        ImGui::Checkbox("Disco Light", &isDiscoMode);
+        ImGui::SliderFloat3("Light Ambient", (float*)&lightAmbient, 0.0f, 1.0f);
+        ImGui::SliderFloat3("Light Diffuse", (float*)&lightDiffuse, 0.0f, 1.0f);
+        ImGui::SliderFloat3("Light Specular", (float*)&lightSpecular, 0.0f, 1.0f);
+        ImGui::Text("Material Properties:");
         ImGui::SliderFloat3("Ambient", (float*)&ambient, 0.0f, 1.0f);
         ImGui::SliderFloat3("Diffuse",  (float*)&diffuse, 0.0f, 1.0f);
         ImGui::SliderFloat3("Specular",  (float*)&specular, 0.0f, 1.0f);
