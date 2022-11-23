@@ -1,3 +1,5 @@
+#define STB_IMAGE_IMPLEMENTATION
+
 #include "../../include/imgui/imgui.h"
 #include "../../include/imgui/imgui_impl_glfw.h"
 #include "../../include/imgui/imgui_impl_opengl3.h"
@@ -6,6 +8,7 @@
 #include <math.h>
 #include "../../include/glad/glad.h"
 #include "../../include/GLFW/glfw3.h"
+#include "../../include/stb/stb_image.h"
 
 #include "../../Shader.h"
 
@@ -138,9 +141,9 @@ int main() {
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 330 core");
 
-    int width, height;
-    glfwGetFramebufferSize(window, &width, &height);
-    glViewport(0, 0, width, height);
+    int windowWidth, windowHeight;
+    glfwGetFramebufferSize(window, &windowWidth, &windowHeight);
+    glViewport(0, 0, windowWidth, windowHeight);
     glfwSetFramebufferSizeCallback(window, onWindowSizeChanged);
 
     // application
@@ -177,6 +180,29 @@ int main() {
 
     Shader lightingShader("./src/02.colors/colors3/shaders/basic.vs", "./src/02.colors/colors3/shaders/basic.fs");
     Shader shaderLightObject("./src/02.colors/colors3/shaders/basic_light.vs", "./src/02.colors/colors3/shaders/basic_light.fs");
+
+    // textures
+    uint diffuseMap;
+    glGenTextures(1, &diffuseMap);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, diffuseMap);
+    // set texture filtering/wrapping options
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+    // load image
+    stbi_set_flip_vertically_on_load(true);
+    int width, height, channels;
+    unsigned char* imageData = stbi_load("./resources/container-tex-1.jpg", &width, &height, &channels, 0);
+    if (imageData) {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, imageData);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    } else {
+        std::cout << "Couldn't load the image under ./resources/container-tex-1.jpg" << std::endl;
+        return -1;
+    }
 
     float deltaTime = 0.0f;
     float lastFrameTime = 0.0f;
@@ -258,8 +284,7 @@ int main() {
             lightingShader.setVec3f("light.specular", lightSpecular);
             lightingShader.setVec3f("light.positionVS", lightPositionVS);
 
-            lightingShader.setVec3f("material.ambient", ambient);
-            lightingShader.setVec3f("material.diffuse", diffuse);
+            lightingShader.setInt("material.diffuse", 0);
             lightingShader.setVec3f("material.specular", specular);
             lightingShader.setFloat("material.shininess", shininess);
 

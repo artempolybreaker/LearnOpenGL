@@ -1,8 +1,7 @@
 #version 330 core
 
 struct Material {
-   vec3 ambient;
-   vec3 diffuse;
+   sampler2D diffuse;
    vec3 specular;
    float shininess;
 };
@@ -29,14 +28,16 @@ out vec4 FragColor;
 
 void main()
 {
+   vec3 diffuseTexColor = vec3(texture(material.diffuse, uv));
+
    // ambient
-   vec3 ambient = light.ambient * material.ambient;
+   vec3 ambient = light.ambient * diffuseTexColor;
    
    // diffuse
    vec3 normVS = normalize(normalVS);
    vec3 toLight = normalize(light.positionVS - posVS);
    float diff = max(dot(toLight, normVS), 0.0);
-   vec3 diffuse = light.diffuse * (diff * material.diffuse);
+   vec3 diffuse = light.diffuse * (diff * diffuseTexColor);
 
    // specular
    vec3 viewDir = normalize(-posVS);
