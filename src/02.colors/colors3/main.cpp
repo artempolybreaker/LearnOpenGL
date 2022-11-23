@@ -225,7 +225,7 @@ int main() {
     float lastFrameTime = 0.0f;
     bool isPaused = false;
     bool isDiscoMode = false;
-    glm::vec3 lightStartPosition = glm::vec3(0.0f,  0.0f,  0.0f);
+    glm::vec3 lightStartPosition = glm::vec3(1.0f,  1.0f,  1.0f);
 
     // uniform inputs
     glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -255,7 +255,7 @@ int main() {
         // params
         float sinPos = sin(currentFrameTime) * 1.5f;
         float cosPos = cos(currentFrameTime) * 1.5f;
-        glm::vec3 lightPosition = lightStartPosition + glm::vec3(sinPos, 0.0f, cosPos);
+        glm::vec3 lightPosition = lightStartPosition;// + glm::vec3(sinPos, 0.0f, cosPos);
 
         // math
         glm::mat4 view = glm::mat4(1.0f);
