@@ -185,6 +185,7 @@ int main() {
     glm::vec3 lightStartPosition = glm::vec3(0.0f,  0.0f,  0.0f);
 
     // uniform inputs
+    glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
     glm::vec3 ambient, diffuse, specular, lightAmbient, lightDiffuse, lightSpecular;
     float shininess = 32.0f;
     ambient = glm::vec3(0.1f,0.1f,0.1f);
@@ -212,7 +213,6 @@ int main() {
         float sinPos = sin(currentFrameTime) * 1.5f;
         float cosPos = cos(currentFrameTime) * 1.5f;
         glm::vec3 lightPosition = lightStartPosition + glm::vec3(sinPos, 0.0f, cosPos);
-        glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 
         // math
         glm::mat4 view = glm::mat4(1.0f);
@@ -253,7 +253,7 @@ int main() {
             lightingShader.setMat4("view", view);
             lightingShader.setMat4("projection", projection);
             
-            lightingShader.setVec3f("light.ambient", lightAmbient * lightColor);
+            lightingShader.setVec3f("light.ambient", lightAmbient * lightColor * 0.2f);
             lightingShader.setVec3f("light.diffuse", lightDiffuse * lightColor);
             lightingShader.setVec3f("light.specular", lightSpecular);
             lightingShader.setVec3f("light.positionVS", lightPositionVS);
@@ -282,14 +282,17 @@ int main() {
         glBindVertexArray(0); // no need to unbind it every time but ok
 
         // imgui
-        ImGui::Begin("My name window");
+        ImGui::Begin("Lighting Settings");
         ImGui::Checkbox("Pause", &isPaused);
         ImGui::Text("Light Properties:");
         ImGui::Checkbox("Disco Light", &isDiscoMode);
         ImGui::SliderFloat3("Light Ambient", (float*)&lightAmbient, 0.0f, 1.0f);
         ImGui::SliderFloat3("Light Diffuse", (float*)&lightDiffuse, 0.0f, 1.0f);
         ImGui::SliderFloat3("Light Specular", (float*)&lightSpecular, 0.0f, 1.0f);
-        ImGui::Text("Material Properties:");
+        ImGui::ColorPicker3("Light Color", (float*)&lightColor, ImGuiColorEditFlags_DisplayRGB);
+        ImGui::End();
+        
+        ImGui::Begin("Material Settings");
         ImGui::SliderFloat3("Ambient", (float*)&ambient, 0.0f, 1.0f);
         ImGui::SliderFloat3("Diffuse",  (float*)&diffuse, 0.0f, 1.0f);
         ImGui::SliderFloat3("Specular",  (float*)&specular, 0.0f, 1.0f);
