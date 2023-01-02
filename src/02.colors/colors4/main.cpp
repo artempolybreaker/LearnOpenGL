@@ -147,7 +147,16 @@ int main() {
 
     // application
     glm::vec3 positions[] = {
-        glm::vec3( 0.0f,  0.0f,  0.0f), 
+        glm::vec3( 0.0f,  0.0f,  0.0f),
+        glm::vec3( 2.0f,  5.0f, -15.0f),
+        glm::vec3(-1.5f, -2.2f, -2.5f),
+        glm::vec3(-3.8f, -2.0f, -12.3f),
+        glm::vec3( 2.4f, -0.4f, -3.5f),
+        glm::vec3(-1.7f,  3.0f, -7.5f),
+        glm::vec3( 1.3f, -2.0f, -2.5f),
+        glm::vec3( 1.5f,  2.0f, -2.5f),
+        glm::vec3( 1.5f,  0.2f, -1.5f),
+        glm::vec3(-1.3f,  1.0f, -1.5f)
     };
 
     uint VBO, VAO, lightVAO;
@@ -177,8 +186,8 @@ int main() {
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glEnable(GL_DEPTH_TEST);
 
-    Shader lightingShader("./src/02.colors/colors3/shaders/basic.vs", "./src/02.colors/colors3/shaders/basic.fs");
-    Shader shaderLightObject("./src/02.colors/colors3/shaders/basic_light.vs", "./src/02.colors/colors3/shaders/basic_light.fs");
+    Shader lightingShader("./src/02.colors/colors4/shaders/basic.vs", "./src/02.colors/colors4/shaders/basic.fs");
+    Shader shaderLightObject("./src/02.colors/colors4/shaders/basic_light.vs", "./src/02.colors/colors4/shaders/basic_light.fs");
 
     // textures
     uint diffuseMap, specularMap, emissionMap;
@@ -243,6 +252,7 @@ int main() {
     bool isPaused = false;
     bool isDiscoMode = false;
     glm::vec3 lightStartPosition = glm::vec3(1.0f,  1.0f,  1.0f);
+    glm::vec3 lightStartDir = glm::vec3(-0.2f, -1.0f, -0.3f);
 
     // uniform inputs
     glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
@@ -251,9 +261,9 @@ int main() {
     ambient = glm::vec3(0.1f,0.1f,0.1f);
     diffuse = glm::vec3(0.5f,0.1f,0.5f);
     specular = glm::vec3(0.5f,0.5f,0.1f);
-    lightAmbient = glm::vec3(0.1f,0.1f,0.1f);
-    lightDiffuse = glm::vec3(0.5f,0.5f,0.5f);
-    lightSpecular = glm::vec3(1.0f,1.0f,1.0f);
+    lightAmbient = glm::vec3(1.0f,1.0f,1.0f);//glm::vec3(0.1f,0.1f,0.1f);
+    lightDiffuse = glm::vec3(1.0f,1.0f,1.0f);//glm::vec3(0.5f,0.5f,0.5f);
+    lightSpecular = glm::vec3(1.0f,1.0f,1.0f);//glm::vec3(1.0f,1.0f,1.0f);
 
     while(!glfwWindowShouldClose(window)) {
         // time
@@ -273,6 +283,7 @@ int main() {
         float sinPos = sin(currentFrameTime) * 1.5f;
         float cosPos = cos(currentFrameTime) * 1.5f;
         glm::vec3 lightPosition = lightStartPosition;// + glm::vec3(sinPos, 0.0f, cosPos);
+        glm::vec3 lightDir = lightStartDir;
 
         // math
         glm::mat4 view = glm::mat4(1.0f);
@@ -283,6 +294,7 @@ int main() {
         projection = glm::perspective(glm::radians(45.0f), (float)windowWidth / (float)windowHeight, 0.1f, 100.0f);
         
         glm::vec3 lightPositionVS = view * glm::vec4(lightPosition, 1.0f);
+        glm::vec3 lightDirVS = view * glm::vec4(lightDir, 0.0f);
 
         if (isDiscoMode) {
             lightColor.x = sin(currentFrameTime) * 2.0f;
@@ -316,7 +328,7 @@ int main() {
             lightingShader.setVec3f("light.ambient", lightAmbient * lightColor * 0.2f);
             lightingShader.setVec3f("light.diffuse", lightDiffuse * lightColor);
             lightingShader.setVec3f("light.specular", lightSpecular);
-            lightingShader.setVec3f("light.positionVS", lightPositionVS);
+            lightingShader.setVec3f("light.dirVS", lightDirVS);
 
             lightingShader.setInt("material.diffuse", 0); // 0 means -> texture unit 0
             lightingShader.setInt("material.specular", 1); // 1 means -> texture unit 1
@@ -346,6 +358,7 @@ int main() {
         ImGui::Checkbox("Pause", &isPaused);
         ImGui::Text("Light Properties:");
         ImGui::Checkbox("Disco Light", &isDiscoMode);
+        ImGui::SliderFloat3("Light Dir", (float*)&lightStartDir, -1.0f, 1.0f);
         ImGui::SliderFloat3("Light Ambient", (float*)&lightAmbient, 0.0f, 1.0f);
         ImGui::SliderFloat3("Light Diffuse", (float*)&lightDiffuse, 0.0f, 1.0f);
         ImGui::SliderFloat3("Light Specular", (float*)&lightSpecular, 0.0f, 1.0f);

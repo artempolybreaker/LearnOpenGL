@@ -8,7 +8,8 @@ struct Material {
 };
 
 struct Light {
-   vec3 positionVS;
+   // vec3 positionVS;
+   vec3 dirVS;
 
    vec3 ambient;
    vec3 diffuse;
@@ -38,7 +39,7 @@ void main()
    
    // diffuse
    vec3 normVS = normalize(normalVS);
-   vec3 toLight = normalize(light.positionVS - posVS);
+   vec3 toLight = normalize(-light.dirVS);
    float diff = max(dot(toLight, normVS), 0.0);
    vec3 diffuse = light.diffuse * (diff * diffuseTexColor);
 
@@ -49,7 +50,7 @@ void main()
    vec3 spec = light.specular * (sp * specularTexColor);
 
    // emission
-   vec3 emission = emissionTexColor * floor(1 - specularTexColor);
+   vec3 emission = vec3(0.0);//emissionTexColor * floor(1 - specularTexColor);
 
    vec3 result = (ambient + diffuse + spec + emission);
    FragColor = vec4(result, 1.0);
