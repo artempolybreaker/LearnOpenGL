@@ -181,7 +181,7 @@ int main() {
     Shader shaderLightObject("./src/02.colors/colors3/shaders/basic_light.vs", "./src/02.colors/colors3/shaders/basic_light.fs");
 
     // textures
-    uint diffuseMap, specularMap;
+    uint diffuseMap, specularMap, emissionMap;
     glGenTextures(1, &diffuseMap);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, diffuseMap);
@@ -216,7 +216,24 @@ int main() {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, imageData);
         glGenerateMipmap(GL_TEXTURE_2D);
     } else {
-        std::cout << "Couldn't load the image under ./resources/container-tex-1.jpg" << std::endl;
+        std::cout << "Couldn't load the image under ./resources/container-tex-specular.jpg" << std::endl;
+        return -1;
+    }
+    stbi_image_free(imageData);
+
+    glGenTextures(1, &emissionMap);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, emissionMap);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    imageData = stbi_load("./resources/matrix.jpg", &width, &height, &channels, 0);
+    if (imageData) {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, imageData);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    } else {
+        std::cout << "Couldn't load the image under ./resources/matrix.jpg" << std::endl;
         return -1;
     }
     stbi_image_free(imageData);
@@ -303,6 +320,7 @@ int main() {
 
             lightingShader.setInt("material.diffuse", 0); // 0 means -> texture unit 0
             lightingShader.setInt("material.specular", 1); // 1 means -> texture unit 1
+            lightingShader.setInt("material.emission", 2); // 2 means -> texture unit 2
             lightingShader.setFloat("material.shininess", shininess);
 
             glDrawArrays(GL_TRIANGLES, 0, 36);
