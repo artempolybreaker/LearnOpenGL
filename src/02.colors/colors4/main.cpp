@@ -256,7 +256,7 @@ int main() {
 
     // uniform inputs
     glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
-    glm::vec3 ambient, diffuse, specular, lightAmbient, lightDiffuse, lightSpecular;
+    glm::vec3 ambient, diffuse, specular, lightAmbient, lightDiffuse, lightSpecular, pointLightConsts;
     float shininess = 32.0f;
     ambient = glm::vec3(0.1f,0.1f,0.1f);
     diffuse = glm::vec3(0.5f,0.1f,0.5f);
@@ -264,6 +264,7 @@ int main() {
     lightAmbient = glm::vec3(1.0f,1.0f,1.0f);//glm::vec3(0.1f,0.1f,0.1f);
     lightDiffuse = glm::vec3(1.0f,1.0f,1.0f);//glm::vec3(0.5f,0.5f,0.5f);
     lightSpecular = glm::vec3(1.0f,1.0f,1.0f);//glm::vec3(1.0f,1.0f,1.0f);
+    pointLightConsts = glm::vec3(1.0f, 0.07f, 0.017);
 
     while(!glfwWindowShouldClose(window)) {
         // time
@@ -328,7 +329,9 @@ int main() {
             lightingShader.setVec3f("light.ambient", lightAmbient * lightColor * 0.2f);
             lightingShader.setVec3f("light.diffuse", lightDiffuse * lightColor);
             lightingShader.setVec3f("light.specular", lightSpecular);
+            lightingShader.setVec3f("light.positionVS", lightPositionVS);
             lightingShader.setVec3f("light.dirVS", lightDirVS);
+            lightingShader.setVec3f("light.pointLightConsts", pointLightConsts);
 
             lightingShader.setInt("material.diffuse", 0); // 0 means -> texture unit 0
             lightingShader.setInt("material.specular", 1); // 1 means -> texture unit 1
@@ -358,7 +361,10 @@ int main() {
         ImGui::Checkbox("Pause", &isPaused);
         ImGui::Text("Light Properties:");
         ImGui::Checkbox("Disco Light", &isDiscoMode);
+        ImGui::SliderFloat3("Light Pos", (float*)&lightStartPosition, -10.0f, 10.0f);
         ImGui::SliderFloat3("Light Dir", (float*)&lightStartDir, -1.0f, 1.0f);
+        ImGui::InputFloat3("Point Light Consts", (float*)&pointLightConsts);
+        ImGui::Spacing();
         ImGui::SliderFloat3("Light Ambient", (float*)&lightAmbient, 0.0f, 1.0f);
         ImGui::SliderFloat3("Light Diffuse", (float*)&lightDiffuse, 0.0f, 1.0f);
         ImGui::SliderFloat3("Light Specular", (float*)&lightSpecular, 0.0f, 1.0f);
