@@ -17,6 +17,7 @@ struct Light {
 
    vec3 pointLightConsts; // r = constant, g = linear, b = quadratic
    float cutoff; // for spotlight
+   float outerCutoff; // for spotlight
 };
 
 // interpolated values from VS
@@ -47,29 +48,29 @@ void main()
    // spotlight
    vec3 toLight = normalize(light.positionVS - posVS);
    float theta = dot(toLight, normalize(-light.dirVS));
-   if (theta > light.cutoff) {
-      // diffuse
-      // vec3 toLight = normalize(-light.dirVS);
-      vec3 normVS = normalize(normalVS);
-      float diff = max(dot(toLight, normVS), 0.0);
-      diffuse = light.diffuse * (diff * diffuseTexColor);
+   float epsilon = light.cutoff - light.outerCutoff;
+   float intensity = clamp((theta - light.outerCutoff) / epsilon, 0.0, 1.0);
+   
+   // diffuse
+   vec3 normVS = normalize(normalVS);
+   float diff = max(dot(toLight, normVS), 0.0);
+   diffuse = light.diffuse * (diff * diffuseTexColor);
 
-      // specular
-      vec3 viewDir = normalize(-posVS);
-      vec3 reflectDir = reflect(-toLight, normVS);
-      float sp = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
-      spec = light.specular * (sp * specularTexColor);
+   // specular
+   vec3 viewDir = normalize(-posVS);
+   vec3 reflectDir = reflect(-toLight, normVS);
+   float sp = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
+   spec = light.specular * (sp * specularTexColor);
 
-      // emission
-      emission = vec3(0.0);//emissionTexColor * floor(1 - specularTexColor);
+   // emission
+   emission = vec3(0.0);//emissionTexColor * floor(1 - specularTexColor);
 
-      // attenuation
-      float distToLight = length(light.positionVS - posVS);
-      float att = 1.0 / (light.pointLightConsts.r + light.pointLightConsts.g * distToLight + light.pointLightConsts.b * (distToLight * distToLight));
-      ambient *= att;
-      diffuse *= att;
-      spec *= att;
-   }
+   // attenuation
+   float distToLight = length(light.positionVS - posVS);
+   float att = 1.0 / (light.pointLightConsts.r + light.pointLightConsts.g * distToLight + light.pointLightConsts.b * (distToLight * distToLight));
+   ambient *= att;
+   diffuse *= att * intensity;
+   spec *= att * intensity;
 
    vec3 result = (ambient + diffuse + spec + emission);
    FragColor = vec4(result, 1.0);
