@@ -258,6 +258,7 @@ int main() {
     glm::vec3 lightColor = glm::vec3(1.0f, 1.0f, 1.0f);
     glm::vec3 ambient, diffuse, specular, lightAmbient, lightDiffuse, lightSpecular, pointLightConsts;
     float shininess = 32.0f;
+    float spotLightCutOff = glm::cos(glm::radians(12.5f));
     ambient = glm::vec3(0.1f,0.1f,0.1f);
     diffuse = glm::vec3(0.5f,0.1f,0.5f);
     specular = glm::vec3(0.5f,0.5f,0.1f);
@@ -332,6 +333,7 @@ int main() {
             lightingShader.setVec3f("light.positionVS", lightPositionVS);
             lightingShader.setVec3f("light.dirVS", lightDirVS);
             lightingShader.setVec3f("light.pointLightConsts", pointLightConsts);
+            lightingShader.setFloat("light.cutoff", spotLightCutOff);
 
             lightingShader.setInt("material.diffuse", 0); // 0 means -> texture unit 0
             lightingShader.setInt("material.specular", 1); // 1 means -> texture unit 1
