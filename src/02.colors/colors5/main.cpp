@@ -72,7 +72,7 @@ void onWindowSizeChanged(GLFWwindow* window, int width, int height){
     windowWidth = width;
     windowHeight = height;
     glViewport(0, 0, width, height);
-    std::cout << "Changed window size: " << width << "; " << height << std::endl;
+    //std::cout << "Changed window size: " << width << "; " << height << std::endl;
 }
 Input getInput(GLFWwindow *window)
 {
@@ -268,6 +268,13 @@ int main() {
     lightSpecular = glm::vec3(1.0f,1.0f,1.0f);//glm::vec3(1.0f,1.0f,1.0f);
     pointLightConsts = glm::vec3(1.0f, 0.07f, 0.017);
 
+    glm::vec3 pointLightPositions[] = {
+        glm::vec3( 0.7f,  0.2f,  2.0f),
+        glm::vec3( 2.3f, -3.3f, -4.0f),
+        glm::vec3(-4.0f,  2.0f, -12.0f),
+        glm::vec3( 0.0f,  0.0f, -3.0f)
+    };
+
     while(!glfwWindowShouldClose(window)) {
         // time
         float currentFrameTime = 0.0f;
@@ -328,14 +335,28 @@ int main() {
             lightingShader.setMat4("view", view);
             lightingShader.setMat4("projection", projection);
             
-            lightingShader.setVec3f("light.ambient", lightAmbient * lightColor * 0.2f);
-            lightingShader.setVec3f("light.diffuse", lightDiffuse * lightColor);
-            lightingShader.setVec3f("light.specular", lightSpecular);
-            lightingShader.setVec3f("light.positionVS", lightPositionVS);
-            lightingShader.setVec3f("light.dirVS", lightDirVS);
-            lightingShader.setVec3f("light.pointLightConsts", pointLightConsts);
-            lightingShader.setFloat("light.cutoff", spotLightCutOff);
-            lightingShader.setFloat("light.outerCutoff", spotLightOuterCutOff);
+            lightingShader.setVec3f("dirLight.dirVS", lightDirVS);
+            lightingShader.setVec3f("dirLight.ambient", lightAmbient * lightColor * 0.2f);
+            lightingShader.setVec3f("dirLight.diffuse", lightDiffuse * lightColor);
+            lightingShader.setVec3f("dirLight.specular", lightSpecular);
+            
+            lightingShader.setVec3f("pointLights[0].positionVS", pointLightPositions[0]);
+            lightingShader.setVec3f("pointLights[0].pointLightConsts", pointLightConsts);
+            lightingShader.setVec3f("pointLights[0].ambient", lightAmbient * lightColor * 0.2f);
+            lightingShader.setVec3f("pointLights[0].diffuse", lightDiffuse * lightColor);
+            lightingShader.setVec3f("pointLights[0].specular", lightSpecular);
+            lightingShader.setVec3f("pointLights[1].positionVS", pointLightPositions[1]);
+            lightingShader.setVec3f("pointLights[2].positionVS", pointLightPositions[2]);
+            lightingShader.setVec3f("pointLights[3].positionVS", pointLightPositions[3]);
+
+            lightingShader.setVec3f("spotLight.positionVS", glm::vec3(0.0f, 0.0f, 0.0f));
+            lightingShader.setVec3f("spotLight.dirVS", glm::vec3(0.0f, 0.0f, 1.0f));
+            lightingShader.setFloat("spotLight.cutoff", spotLightCutOff);
+            lightingShader.setFloat("spotLight.outerCutoff", spotLightOuterCutOff);
+            lightingShader.setVec3f("spotLight.pointLightConsts", pointLightConsts);
+            lightingShader.setVec3f("spotLight.ambient", lightAmbient * lightColor * 0.2f);
+            lightingShader.setVec3f("spotLight.diffuse", lightDiffuse * lightColor);
+            lightingShader.setVec3f("spotLight.specular", lightSpecular);
 
             lightingShader.setInt("material.diffuse", 0); // 0 means -> texture unit 0
             lightingShader.setInt("material.specular", 1); // 1 means -> texture unit 1
@@ -348,17 +369,19 @@ int main() {
 
         // render light-cube
         shaderLightObject.use();
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, lightPosition);
-        model = glm::scale(model, glm::vec3(0.25f));
-        model = glm::rotate(model, glm::radians(15.0f), glm::vec3(0.5f, 1.0f, 0.0f));
-        shaderLightObject.setMat4("model", model);
-        shaderLightObject.setMat4("view", view);
-        shaderLightObject.setMat4("projection", projection);
-        shaderLightObject.setVec3f("lightColor", lightColor);
-        glBindVertexArray(lightVAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        glBindVertexArray(0); // no need to unbind it every time but ok
+        for (int i = 0; i < 4; i++) {
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, pointLightPositions[i]);
+            model = glm::scale(model, glm::vec3(0.25f));
+            model = glm::rotate(model, glm::radians(15.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+            shaderLightObject.setMat4("model", model);
+            shaderLightObject.setMat4("view", view);
+            shaderLightObject.setMat4("projection", projection);
+            shaderLightObject.setVec3f("lightColor", lightColor);
+            glBindVertexArray(lightVAO);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+            glBindVertexArray(0); // no need to unbind it every time but ok
+        }
 
         // imgui
         ImGui::Begin("Lighting Settings");
