@@ -1,10 +1,16 @@
 #define GL_SILENCE_DEPRECATION
+#define CPP_GLSL_INCLUDE
 
 #include <iostream>
+#include <filesystem>
 #include <math.h>
 #include "../../include/glad/glad.h"
 #include "../../include/GLFW/glfw3.h"
 #include "../../shader.h"
+#include "./shaders/shaderVert.glsl"
+#include "./shaders/shaderFrag.glsl"
+
+namespace fs = std::filesystem;
 
 typedef unsigned int uint;
 
@@ -154,8 +160,8 @@ int main()
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 
-    //std::cout << "before constructor..." << std::endl;
-    Shader myShader("./src/01.gettingStarted/intro0/shaders/shaderVert.vs", "./src/01.gettingStarted/intro0/shaders/shaderFrag.fs");
+    std::cout << fs::current_path() << std::endl;
+    Shader myShader(shader_vert, shader_frag);
     while (!glfwWindowShouldClose(window))
     {
         //INPUT

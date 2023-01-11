@@ -44,7 +44,15 @@ public:
             std::cout << e.what() << std::endl;
             std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
         }
-        
+
+        initialize(vertexCode, fragmentCode);
+    }
+
+    Shader(std::string vertexCode, std::string fragmentCode) {
+        initialize(vertexCode, fragmentCode);
+    }
+
+    void initialize(std::string vertexCode, std::string fragmentCode) {
         const char* vShaderCode = vertexCode.c_str();
         const char* fShaderCode = fragmentCode.c_str();
 
