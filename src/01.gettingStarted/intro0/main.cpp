@@ -1,5 +1,5 @@
 #define GL_SILENCE_DEPRECATION
-#define CPP_GLSL_INCLUDE
+// #define RELEASE
 
 #include <iostream>
 #include <filesystem>
@@ -7,8 +7,15 @@
 #include "../../include/glad/glad.h"
 #include "../../include/GLFW/glfw3.h"
 #include "../../shader.h"
-#include "./shaders/shaderVert.glsl"
-#include "./shaders/shaderFrag.glsl"
+
+#ifdef RELEASE
+std::string shader_frag = R"(
+    #version 330 core
+    uniform vec4 myColor; in vec3 color; out vec4 FragColor; void main() { FragColor = vec4(color.xyz * myColor.xyz, 1.0f); })";
+std::string shader_vert = R"(
+    #version 330 core 
+    uniform vec2 offset; layout (location = 0) in vec3 aPos; layout (location = 1) in vec3 aCol; out vec3 color; void main() { color = vec3(aCol); gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0) + vec4(offset, 0, 0); })";
+#endif
 
 namespace fs = std::filesystem;
 
@@ -159,9 +166,13 @@ int main()
     // uncomment this call to draw in wireframe polygons.
     glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
-
-    std::cout << fs::current_path() << std::endl;
+    #ifdef RELEASE
     Shader myShader(shader_vert, shader_frag);
+    #else
+    std::cout << "Current working dir: " << fs::current_path() << std::endl;
+    Shader myShader("./shaders/shaderVert.vs", "./shaders/shaderFrag.fs");
+    #endif
+
     while (!glfwWindowShouldClose(window))
     {
         //INPUT

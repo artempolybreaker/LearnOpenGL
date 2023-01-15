@@ -1,7 +1,3 @@
-#ifdef CPP_GLSL_INCLUDE
-std::string shader_frag = R"(
-#endif
-
 #version 330 core
 uniform vec4 myColor;
 
@@ -13,7 +9,3 @@ void main()
 //   FragColor = vec4(myColor.xyz, 1.0f);
    FragColor = vec4(color.xyz * myColor.xyz, 1.0f);
 }
-
-#ifdef CPP_GLSL_INCLUDE
-)";
-#endif
