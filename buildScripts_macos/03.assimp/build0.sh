@@ -1,0 +1,1 @@
+g++ -std=c++17 ./src/03.assimp/assimp0/main.cpp ./src/glad.c -I./src/include -L./libs/lib-arm64 -lglfw3 -lassimp.5.2.4 -framework Cocoa -framework OpenGL -framework IOKit
