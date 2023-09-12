@@ -2,12 +2,8 @@
 #include <math.h>
 #include "../../include/glad/glad.h"
 #include "../../include/GLFW/glfw3.h"
-
 #include "../../Shader.h"
-
-// #include <assimp/Importer.hpp>
-// #include <assimp/scene.h>
-// #include <assimp/postprocess.h>
+#include "../../Model.h"
 
 const int WINDOW_WIDTH = 1024;
 const int WINDOW_HEIGHT = 768;
@@ -95,22 +91,9 @@ int main() {
     };
     glm::vec3 lightPosition = glm::vec3( 3.0f,  0.0f,  0.0f);
 
-    uint VBO, VAO, lightVAO;
-
-    glGenVertexArrays(1, &VAO);
+    uint VBO, lightVAO;
     glGenVertexArrays(1, &lightVAO);
     glGenBuffers(1, &VBO);
-    // glGenBuffers(1, &VBO);
-
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glBindVertexArray(0);
-
     glBindVertexArray(lightVAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
@@ -122,6 +105,8 @@ int main() {
 
     Shader lightingShader("./src/03.assimp/assimp0/shaders/basic.vs", "./src/03.assimp/assimp0/shaders/basic.fs");
     Shader shaderLightObject("./src/03.assimp/assimp0/shaders/basic_light.vs", "./src/03.assimp/assimp0/shaders/basic_light.fs");
+
+    Model backpackModel("./resources/models/backpack/backpack.obj");
 
     while(!glfwWindowShouldClose(window)) {
         // params
@@ -140,7 +125,6 @@ int main() {
 
         // render cubes
         lightingShader.use();
-        glBindVertexArray(VAO);
         for (int i = 0, n = sizeof(positions) / sizeof(*positions); i < n; i++) {
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, positions[i]);
@@ -151,7 +135,7 @@ int main() {
             lightingShader.setMat4("view", view);
             lightingShader.setMat4("projection", projection);
 
-            glDrawArrays(GL_TRIANGLES, 0, 36);
+            backpackModel.Draw(lightingShader);
         }
         glBindVertexArray(0); // no need to unbind it every time but ok
 
