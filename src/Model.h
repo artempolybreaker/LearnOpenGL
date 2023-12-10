@@ -1,14 +1,12 @@
-#ifndef MODEL_H
-#define MODEL_H
-
-#include <math.h>
+#pragma once
+#include <cmath>
 #include <iostream>
 #include <string>
-#include "./include/glm/glm.hpp"
-#include "./Shader.h"
-#include "./Mesh.h"
+#include <glm/glm.hpp>
+#include <Shader.h>
+#include <Mesh.h>
 #define STB_IMAGE_IMPLEMENTATION
-#include "./include/stb/stb_image.h"
+#include <stb_image.h>
 
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -214,4 +212,3 @@ class Model {
         return textureID;
     }
 };
-#endif

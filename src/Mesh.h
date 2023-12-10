@@ -4,8 +4,8 @@
 #include <math.h>
 #include <iostream>
 #include <string>
-#include "./include/glm/glm.hpp"
-#include "./Shader.h"
+#include <glm/glm.hpp>
+#include <Shader.h>
 
 struct Vertex {
     glm::vec3 position;

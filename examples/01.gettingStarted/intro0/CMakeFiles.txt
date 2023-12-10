@@ -1,0 +1,3 @@
+set(PRIVATE_SOURCES
+  main.cpp
+)

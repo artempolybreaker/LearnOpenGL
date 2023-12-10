@@ -1,9 +1,7 @@
-#ifndef SHADER_H
-#define SHADER_H
-
-#include "include/glad/glad.h"
-#include "include/glm/glm.hpp"
-#include "include/glm/gtc/type_ptr.hpp"
+#pragma once
+#include <glad/glad.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <string>
 #include <fstream>
@@ -126,5 +124,3 @@ public:
         glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(matrix));
     }
 };
-
-#endif

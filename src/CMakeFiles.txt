@@ -1,0 +1,10 @@
+set(PUBLIC_SOURCES
+  Mesh.h
+  Model.h
+  Shader.h
+  camera.h
+)
+
+set(PRIVATE_SOURCES
+  camera.cpp
+)

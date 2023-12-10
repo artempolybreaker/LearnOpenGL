@@ -1,9 +1,8 @@
-#ifndef CAMERA_H
-#define CAMERA_H
+#pragma once
 
-#include "include/glad/glad.h"
-#include "include/glm/glm.hpp"
-#include "include/glm/gtc/type_ptr.hpp"
+//#include "include/glad/glad.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 
 const float SENSIBILITY = 5.0f;
@@ -27,25 +26,7 @@ private:
     glm::vec3 worldUp;
 
 public:
-    Camera(){
-        camPos = glm::vec3(0.0f, 0.0f, -3.0f);
-        camFront = glm::vec3(0.0f, 0.0f, -1.0f);
-        worldUp = camUp = glm::vec3(0.0f, 1.0f, 0.0f);
-        fov = 45.0f;
-        nearPlane = 0.1f;
-        farPlane = 100.0f;
-        yaw = 0;
-        pitch = 0;
-
-        glm::vec3 camDir;
-        camDir.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-        camDir.y = sin(glm::radians(pitch));
-        camDir.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-        
-        camFront = glm::normalize(camDir);
-        camRight = glm::normalize(glm::cross(camFront, worldUp));
-        camUp = glm::normalize(glm::cross(camRight, camFront));
-    }
+    Camera();
 
     void UpdateCameraPosition(glm::vec2 input, float deltaTime, bool shiftPressed = false) {
         float camSpeed = MOVEMENT_SPEED * deltaTime;
@@ -107,4 +88,3 @@ public:
         return glm::perspective(glm::radians(fov), ratio, nearPlane, farPlane);
     }
 };
-#endif
