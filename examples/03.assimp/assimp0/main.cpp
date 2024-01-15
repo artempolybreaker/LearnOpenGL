@@ -1,9 +1,10 @@
 #include <iostream>
 #include <math.h>
-#include "../../include/glad/glad.h"
-#include "../../include/GLFW/glfw3.h"
-#include "../../Shader.h"
-#include "../../Model.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <Shader.h>
+#include <stb_image.h>
+#include <Model.h>
 
 const int WINDOW_WIDTH = 1024;
 const int WINDOW_HEIGHT = 768;
@@ -103,10 +104,10 @@ int main() {
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glEnable(GL_DEPTH_TEST);
 
-    Shader lightingShader("./src/03.assimp/assimp0/shaders/basic.vs", "./src/03.assimp/assimp0/shaders/basic.fs");
-    Shader shaderLightObject("./src/03.assimp/assimp0/shaders/basic_light.vs", "./src/03.assimp/assimp0/shaders/basic_light.fs");
+    Shader lightingShader("./resource/basic.vs", "./resource/basic.fs");
+    Shader shaderLightObject("./resource/basic_light.vs", "./resource/basic_light.fs");
 
-    Model backpackModel("./resources/models/backpack/backpack.obj");
+    Model backpackModel("./resource/models/backpack/backpack.obj");
 
     while(!glfwWindowShouldClose(window)) {
         // params
