@@ -1,22 +1,32 @@
 {
-  "name" : "openglexamplescmake",
-  "version-string" : "1.0.0",
-  "builtin-baseline" : "78b61582c9e093fda56a01ebb654be15a0033897",
-  "dependencies" : [ {
-    "name" : "glm",
-    "version>=" : "0.9.9.8#2",
-    "$comment" : "    # this is heuristically generated, and may not be correct\n\n    find_package(glm CONFIG REQUIRED)\n\n    target_link_libraries(main PRIVATE glm::glm)\n"
-  }, {
-    "name" : "glad",
-    "version>=" : "0.1.36"
-  }, {
-    "name" : "stb",
-    "version>=" : "2023-04-11#1"
-  }, {
-    "name" : "assimp",
-    "version>=" : "5.2.5"
-  }, {
-    "name" : "glfw3",
-    "version>=" : "3.3.8#2"
-  } ]
+  "name": "openglexamplescmake",
+  "version-string": "1.0.0",
+  "builtin-baseline": "78b61582c9e093fda56a01ebb654be15a0033897",
+  "dependencies": [
+    {
+      "name": "assimp",
+      "version>=": "5.2.5"
+    },
+    {
+      "name": "glad",
+      "version>=": "0.1.36"
+    },
+    {
+      "name": "glfw3",
+      "version>=": "3.3.8#2"
+    },
+    {
+      "$comment": "    # this is heuristically generated, and may not be correct\n\n    find_package(glm CONFIG REQUIRED)\n\n    target_link_libraries(main PRIVATE glm::glm)\n",
+      "name": "glm",
+      "version>=": "0.9.9.8#2"
+    },
+    {
+      "name": "stb",
+      "version>=": "2023-04-11#1"
+    },
+    {
+      "name": "imgui",
+      "features": ["freetype", "glfw-binding", "opengl3-binding"]
+    }
+  ]
 }

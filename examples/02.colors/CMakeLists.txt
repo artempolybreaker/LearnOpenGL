@@ -1,0 +1,6 @@
+add_subdirectory(colors0)
+add_subdirectory(colors1)
+add_subdirectory(colors2)
+add_subdirectory(colors3)
+add_subdirectory(colors4)
+add_subdirectory(colors5)

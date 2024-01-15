@@ -9,6 +9,7 @@ find_package(Stb REQUIRED)
 find_package(assimp CONFIG REQUIRED)
 find_package(glad CONFIG REQUIRED)
 find_package(glfw3 CONFIG REQUIRED)
+find_package(imgui CONFIG REQUIRED)
 
 target_link_libraries(${PROJECT_NAME}
   PUBLIC
@@ -16,6 +17,7 @@ target_link_libraries(${PROJECT_NAME}
     assimp::assimp
     glad::glad
     glfw
+    imgui::imgui
 )
 
 
@@ -25,4 +27,7 @@ target_include_directories(${PROJECT_NAME}
     $<INSTALL_INTERFACE:include>
     ${Stb_INCLUDE_DIR}
 )
+
+# set(IMGUI_LIBRARIES ImGui;glfw;GL)
+
 message(STATUS "DDDDDDDDDD - - - - - ${Stb_INCLUDE_DIR}")

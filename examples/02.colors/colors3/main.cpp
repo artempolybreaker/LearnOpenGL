@@ -1,17 +1,15 @@
 #define STB_IMAGE_IMPLEMENTATION
 
-#include "../../include/imgui/imgui.h"
-#include "../../include/imgui/imgui_impl_glfw.h"
-#include "../../include/imgui/imgui_impl_opengl3.h"
-
 #include <iostream>
 #include <math.h>
-#include "../../include/glad/glad.h"
-#include "../../include/GLFW/glfw3.h"
-#include "../../include/stb/stb_image.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <Shader.h>
+#include <stb_image.h>
 
-#include "../../Shader.h"
-
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
 
 const int WINDOW_WIDTH = 1024;
 const int WINDOW_HEIGHT = 768;
@@ -177,8 +175,8 @@ int main() {
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glEnable(GL_DEPTH_TEST);
 
-    Shader lightingShader("./src/02.colors/colors3/shaders/basic.vs", "./src/02.colors/colors3/shaders/basic.fs");
-    Shader shaderLightObject("./src/02.colors/colors3/shaders/basic_light.vs", "./src/02.colors/colors3/shaders/basic_light.fs");
+    Shader lightingShader("./resource/basic.vs", "./resource/basic.fs");
+    Shader shaderLightObject("./resource/basic_light.vs", "./resource/basic_light.fs");
 
     // textures
     uint diffuseMap, specularMap, emissionMap;
@@ -194,12 +192,12 @@ int main() {
     // load image
     stbi_set_flip_vertically_on_load(true);
     int width, height, channels;
-    unsigned char* imageData = stbi_load("./resources/container-tex-1.jpg", &width, &height, &channels, 0);
+    unsigned char* imageData = stbi_load("./resource/container-tex-1.jpg", &width, &height, &channels, 0);
     if (imageData) {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, imageData);
         glGenerateMipmap(GL_TEXTURE_2D);
     } else {
-        std::cout << "Couldn't load the image under ./resources/container-tex-1.jpg" << std::endl;
+        std::cout << "Couldn't load the image under ./resource/container-tex-1.jpg" << std::endl;
         return -1;
     }
     stbi_image_free(imageData);
@@ -211,12 +209,12 @@ int main() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    imageData = stbi_load("./resources/container-tex-specular.jpg", &width, &height, &channels, 0);
+    imageData = stbi_load("./resource/container-tex-specular.jpg", &width, &height, &channels, 0);
     if (imageData) {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, imageData);
         glGenerateMipmap(GL_TEXTURE_2D);
     } else {
-        std::cout << "Couldn't load the image under ./resources/container-tex-specular.jpg" << std::endl;
+        std::cout << "Couldn't load the image under ./resource/container-tex-specular.jpg" << std::endl;
         return -1;
     }
     stbi_image_free(imageData);
@@ -228,12 +226,12 @@ int main() {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    imageData = stbi_load("./resources/matrix.jpg", &width, &height, &channels, 0);
+    imageData = stbi_load("./resource/matrix.jpg", &width, &height, &channels, 0);
     if (imageData) {
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, imageData);
         glGenerateMipmap(GL_TEXTURE_2D);
     } else {
-        std::cout << "Couldn't load the image under ./resources/matrix.jpg" << std::endl;
+        std::cout << "Couldn't load the image under ./resource/matrix.jpg" << std::endl;
         return -1;
     }
     stbi_image_free(imageData);

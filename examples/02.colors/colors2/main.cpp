@@ -1,14 +1,12 @@
-#include "../../include/imgui/imgui.h"
-#include "../../include/imgui/imgui_impl_glfw.h"
-#include "../../include/imgui/imgui_impl_opengl3.h"
-
 #include <iostream>
 #include <math.h>
-#include "../../include/glad/glad.h"
-#include "../../include/GLFW/glfw3.h"
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <Shader.h>
 
-#include "../../Shader.h"
-
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
 
 const int WINDOW_WIDTH = 1024;
 const int WINDOW_HEIGHT = 768;
@@ -175,8 +173,8 @@ int main() {
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glEnable(GL_DEPTH_TEST);
 
-    Shader lightingShader("./src/02.colors/colors2/shaders/basic.vs", "./src/02.colors/colors2/shaders/basic.fs");
-    Shader shaderLightObject("./src/02.colors/colors2/shaders/basic_light.vs", "./src/02.colors/colors2/shaders/basic_light.fs");
+    Shader lightingShader("./resource/basic.vs", "./resource/basic.fs");
+    Shader shaderLightObject("./resource/basic_light.vs", "./resource/basic_light.fs");
 
     float deltaTime = 0.0f;
     float lastFrameTime = 0.0f;

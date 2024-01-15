@@ -1,10 +1,11 @@
 #include <iostream>
 #include <math.h>
-#include "../../include/glad/glad.h"
-#include "../../include/GLFW/glfw3.h"
-
-#include "../../shader.h"
-
+#include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <Shader.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 const int WINDOW_WIDTH = 1024;
 const int WINDOW_HEIGHT = 768;
@@ -117,8 +118,9 @@ int main() {
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glEnable(GL_DEPTH_TEST);
 
-    Shader lightingShader("./src/02.colors/colors0/shaders/basic.vs", "./src/02.colors/colors0/shaders/basic.fs");
-    Shader shaderLightObject("./src/02.colors/colors0/shaders/basic_light.vs", "./src/02.colors/colors0/shaders/basic_light.fs");
+    std::cout << "Current directory: " << std::filesystem::current_path() << std::endl;
+    Shader lightingShader("./resource/basic.vs", "./resource/basic.fs");
+    Shader shaderLightObject("./resource/basic_light.vs", "./resource/basic_light.fs");
 
     while(!glfwWindowShouldClose(window)) {
         // params
