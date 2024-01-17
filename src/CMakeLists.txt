@@ -2,7 +2,7 @@ project(Base)
 
 include(CMakeFiles.txt)
 
-add_library(${PROJECT_NAME} SHARED ${PUBLIC_SOURCES} ${PRIVATE_SOURCES})
+add_library(${PROJECT_NAME} STATIC ${PUBLIC_SOURCES} ${PRIVATE_SOURCES})
 message(STATUS "PROJECT NAME <- - - - -> ${PROJECT_NAME}")
 find_package(glm CONFIG REQUIRED)
 find_package(Stb REQUIRED)

@@ -92,7 +92,7 @@ int main() {
     };
     glm::vec3 lightPosition = glm::vec3( 3.0f,  0.0f,  0.0f);
 
-    uint VBO, lightVAO;
+    unsigned int VBO, lightVAO;
     glGenVertexArrays(1, &lightVAO);
     glGenBuffers(1, &VBO);
     glBindVertexArray(lightVAO);
