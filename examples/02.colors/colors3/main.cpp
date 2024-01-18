@@ -11,6 +11,8 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
+typedef unsigned int uint;
+
 const int WINDOW_WIDTH = 1024;
 const int WINDOW_HEIGHT = 768;
 int windowWidth = WINDOW_WIDTH;
@@ -148,7 +150,7 @@ int main() {
         glm::vec3( 0.0f,  0.0f,  0.0f), 
     };
 
-    uint VBO, VAO, lightVAO;
+    unsigned int VBO, VAO, lightVAO;
 
     glGenVertexArrays(1, &VAO);
     glGenVertexArrays(1, &lightVAO);
@@ -179,7 +181,7 @@ int main() {
     Shader shaderLightObject("./resource/basic_light.vs", "./resource/basic_light.fs");
 
     // textures
-    uint diffuseMap, specularMap, emissionMap;
+    unsigned int diffuseMap, specularMap, emissionMap;
     glGenTextures(1, &diffuseMap);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, diffuseMap);

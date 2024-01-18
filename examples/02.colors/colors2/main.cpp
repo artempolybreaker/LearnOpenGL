@@ -8,6 +8,8 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
+typedef unsigned int uint;
+
 const int WINDOW_WIDTH = 1024;
 const int WINDOW_HEIGHT = 768;
 int windowWidth = WINDOW_WIDTH;

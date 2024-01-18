@@ -6,6 +6,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <filesystem>
+
+typedef unsigned int uint;
 
 const int WINDOW_WIDTH = 1024;
 const int WINDOW_HEIGHT = 768;

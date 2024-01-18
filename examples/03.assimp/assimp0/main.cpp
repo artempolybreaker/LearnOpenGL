@@ -6,6 +6,8 @@
 #include <stb_image.h>
 #include <Model.h>
 
+typedef unsigned int uint;
+
 const int WINDOW_WIDTH = 1024;
 const int WINDOW_HEIGHT = 768;
 int windowWidth = WINDOW_WIDTH;
@@ -92,7 +94,7 @@ int main() {
     };
     glm::vec3 lightPosition = glm::vec3( 3.0f,  0.0f,  0.0f);
 
-    unsigned int VBO, lightVAO;
+    uint VBO, lightVAO;
     glGenVertexArrays(1, &lightVAO);
     glGenBuffers(1, &VBO);
     glBindVertexArray(lightVAO);
