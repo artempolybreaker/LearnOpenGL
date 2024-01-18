@@ -8,9 +8,10 @@ target_link_libraries(${PROJECT_NAME}
   PRIVATE
     Base
 )
-CopyResource(colors1 COMMON 
-  "resource/basic_light.fs"
-  "resource/basic_light.vs"
-  "resource/basic.vs"
-  "resource/basic.fs"
-)
+CreateResourceSymlink(colors1 COMMON)
+# CopyResource(colors1 COMMON 
+#   "resource/basic_light.fs"
+#   "resource/basic_light.vs"
+#   "resource/basic.vs"
+#   "resource/basic.fs"
+# )
