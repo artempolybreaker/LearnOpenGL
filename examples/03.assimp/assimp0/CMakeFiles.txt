@@ -1,3 +1,5 @@
 set(PRIVATE_SOURCES
   main.cpp
 )
+
+set_property(TARGET Base PROPERTY VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/bin")

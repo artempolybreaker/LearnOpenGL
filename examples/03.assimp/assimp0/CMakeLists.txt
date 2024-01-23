@@ -8,11 +8,3 @@ target_link_libraries(${PROJECT_NAME}
   PRIVATE
     Base
 )
-CopyResource(assimp0 COMMON 
-  "resource/basic_light.fs"
-  "resource/basic_light.vs"
-  "resource/basic.vs"
-  "resource/basic.fs"
-  "resource/container-tex-1.jpg"
-  "resource/models/backpack/backpack.obj"
-)

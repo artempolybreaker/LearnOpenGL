@@ -21,12 +21,17 @@ https://learn.microsoft.com/en-us/vcpkg/get_started/get-started?pivots=shell-cmd
 Setup env variables
 ```
 set VCPKG_ROOT="C:/path/to/vcpkg"
+```
+```
 set PATH=%VCPKG_ROOT%;%PATH%
 ```
 
 In the root dir run:
 
 ```
-cmake --preset=default
+cmake --preset=default -DCMAKE_BUILD_TYPE=Debug
+```
+```
 cmake --build build
 ```
+

@@ -6,6 +6,8 @@
 #include <stb_image.h>
 #include <Model.h>
 
+
+
 typedef unsigned int uint;
 
 const int WINDOW_WIDTH = 1024;
@@ -65,6 +67,8 @@ int main() {
         return -1;
     }
 
+    std::cout << RESOURCE_DIR << std::endl;
+
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -106,10 +110,10 @@ int main() {
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
     glEnable(GL_DEPTH_TEST);
 
-    Shader lightingShader("./resource/basic.vs", "./resource/basic.fs");
-    Shader shaderLightObject("./resource/basic_light.vs", "./resource/basic_light.fs");
+    Shader lightingShader("/assimp0/basic.vs", "/assimp0/basic.fs");
+    Shader shaderLightObject("/assimp0/basic_light.vs", "/assimp0/basic_light.fs");
 
-    Model backpackModel("./resource/models/backpack/backpack.obj");
+    Model backpackModel("/assimp0/models/backpack/backpack.obj");
 
     while(!glfwWindowShouldClose(window)) {
         // params
