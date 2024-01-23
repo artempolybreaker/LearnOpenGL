@@ -8,6 +8,12 @@
 #include <sstream>
 #include <iostream>
 
+#ifdef _RESOURCE_DIR
+    #define RESOURCE_DIR _RESOURCE_DIR
+#else
+    #define RESOURCE_DIR "./resource"
+#endif
+
 class Shader {
 public:
     unsigned int ID;
@@ -18,15 +24,19 @@ public:
         std::ifstream vShaderFile;
         std::ifstream fShaderFile;
 
+        std::string resVertexPath = std::string(RESOURCE_DIR) + vertexPath;
+        std::string resFragmentPath = std::string(RESOURCE_DIR) + fragmentPath;
+
+
         // ensure ifstream objects can throw exceptions:
         vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
         fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
         try {
             // open files
             std::cout << "openning " << vertexPath << std::endl;
-            vShaderFile.open(vertexPath);
+            vShaderFile.open(resVertexPath);
             std::cout << "openning " << fragmentPath << std::endl;
-            fShaderFile.open(fragmentPath);
+            fShaderFile.open(resFragmentPath);
 
             std::stringstream vShaderStream, fShaderStream;
             // read file's buffer contents into streams

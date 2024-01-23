@@ -12,6 +12,12 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
+#ifdef _RESOURCE_DIR
+    #define RESOURCE_DIR _RESOURCE_DIR
+#else
+    #define RESOURCE_DIR "./resource"
+#endif
+
 class Model {
     public:
     Model(char* path){
@@ -30,15 +36,17 @@ class Model {
     std::vector<Texture> texturesLoaded;
 
     void LoadModel(std::string path) {
+        std::string resPath = std::string(RESOURCE_DIR) + path;
+
         Assimp::Importer importer;
-        const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+        const aiScene* scene = importer.ReadFile(resPath, aiProcess_Triangulate | aiProcess_FlipUVs);
 
         if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
             std::cout << "ERROR::ASSIMP::" << importer.GetErrorString() << std::endl;
             return;
         }
 
-        directory = path.substr(0, path.find_last_of('/'));
+        directory = resPath.substr(0, resPath.find_last_of('/'));
         std::cout << "INFO::ASSIMP:: directory:" << directory << std::endl;
 
         ProcessNode(scene->mRootNode, scene);
